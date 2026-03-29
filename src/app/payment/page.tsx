@@ -4,10 +4,12 @@ import { useCartStore } from '@/store/useCartStore';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function PaymentPage() {
+  const router = useRouter();
+  const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'transfer' | 'card' | 'ewallet'>('ewallet');
   const { items, getTotalPrice } = useCartStore();
@@ -19,11 +21,9 @@ export default function PaymentPage() {
   if (!mounted) {
     return (
       <>
-        <Navbar />
         <div className="flex-1 max-w-[1440px] mx-auto w-full px-6 lg:px-10 py-12">
           <div className="h-96 flex items-center justify-center">Loading...</div>
         </div>
-        <Footer />
       </>
     );
   }
@@ -59,9 +59,12 @@ export default function PaymentPage() {
     },
   ];
 
+  function openModal() {
+    throw new Error('Function not implemented.');
+  }
+
   return (
     <>
-      <Navbar />
       <div className="flex-1 w-full bg-gray-50 py-8 px-6">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
@@ -198,7 +201,14 @@ export default function PaymentPage() {
                   </span>
                 </div>
 
-                <button className="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-black/90 transition-colors">
+                <button onClick={() => {
+    if (!session) {
+      openModal(); 
+      return;
+    }
+    router.push('/payment');
+  }} 
+  className="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-black/90 transition-colors">
                   Bayar Sekarang
                 </button>
               </div>
@@ -206,7 +216,6 @@ export default function PaymentPage() {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 }

@@ -5,14 +5,16 @@ import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import { useSession } from "next-auth/react";
+import { useAuthModalStore } from "@/store/useAuthModalStore";
 
 export default function CartPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const { items, removeFromCart, updateCartQuantity, emptyCart, getTotalPrice, getTotalItems } = useCartStore();
-
+  const { data: session } = useSession();
+  const { openModal } = useAuthModalStore();
+  
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -20,11 +22,9 @@ export default function CartPage() {
   if (!mounted) {
     return (
       <>
-        <Navbar />
         <div className="flex-1 max-w-[1440px] mx-auto w-full px-6 lg:px-10 py-12">
           <div className="h-96 flex items-center justify-center">Loading...</div>
         </div>
-        <Footer />
       </>
     );
   }
@@ -42,7 +42,6 @@ export default function CartPage() {
 
   return (
     <>
-      <Navbar />
       <div className="flex-1 w-full bg-gray-50 py-8 px-6">
         <div className="max-w-[1440px] mx-auto">
           {/* Header */}
@@ -174,7 +173,6 @@ export default function CartPage() {
           )}
         </div>
       </div>
-      <Footer />
     </>
   );
 }

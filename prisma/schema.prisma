@@ -3,45 +3,46 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "mysql" // Pastikan ini mysql, bukan postgresql atau sqlite
+  url      = env("DATABASE_URL")
 }
 
-model category {
-  id      String    @id
-  name    String
-  slug    String    @unique(map: "Category_slug_key")
-  product product[]
+model Category {
+  id       String    @id
+  name     String
+  slug     String    @unique(map: "Category_slug_key")
+  products Product[]
 }
 
-model order {
-  id            String       @id
+model Order {
+  id            String      @id
   userId        String
-  total         Decimal      @db.Decimal(15, 2)
-  status        order_status @default(PENDING)
+  total         Decimal     @db.Decimal(15, 2)
+  status        OrderStatus @default(PENDING)
   paymentStatus String?
   paymentId     String?
-  createdAt     DateTime     @default(now())
+  createdAt     DateTime    @default(now())
   updatedAt     DateTime
-  user          user         @relation(fields: [userId], references: [id], map: "Order_userId_fkey")
-  orderitem     orderitem[]
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderItems    OrderItem[]
 
   @@index([userId], map: "Order_userId_fkey")
 }
 
-model orderitem {
+model OrderItem {
   id        String  @id
   orderId   String
   productId String
   quantity  Int
   price     Decimal @db.Decimal(15, 2)
-  order     order   @relation(fields: [orderId], references: [id], map: "OrderItem_orderId_fkey")
-  product   product @relation(fields: [productId], references: [id], map: "OrderItem_productId_fkey")
+  order     Order   @relation(fields: [orderId], references: [id], map: "OrderItem_orderId_fkey")
+  product   Product @relation(fields: [productId], references: [id], map: "OrderItem_productId_fkey")
 
   @@index([orderId], map: "OrderItem_orderId_fkey")
   @@index([productId], map: "OrderItem_productId_fkey")
 }
 
-model product {
+model Product {
   id          String      @id
   name        String
   slug        String      @unique(map: "Product_slug_key")
@@ -52,25 +53,13 @@ model product {
   categoryId  String
   createdAt   DateTime    @default(now())
   updatedAt   DateTime
-  orderitem   orderitem[]
-  category    category    @relation(fields: [categoryId], references: [id], map: "Product_categoryId_fkey")
+  orderItems  OrderItem[]
+  category    Category    @relation(fields: [categoryId], references: [id], map: "Product_categoryId_fkey")
 
   @@index([categoryId], map: "Product_categoryId_fkey")
 }
 
-model user {
-  id        String    @id
-  name      String?
-  email     String?   @unique(map: "User_email_key")
-  password  String?
-  role      user_role @default(USER)
-  image     String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime
-  order     order[]
-}
-
-enum order_status {
+enum OrderStatus {
   PENDING
   PAID
   SHIPPED
@@ -78,7 +67,57 @@ enum order_status {
   CANCELLED
 }
 
-enum user_role {
+enum UserRole {
   USER
   ADMIN
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  orders        Order[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useCartStore } from "@/store/useCartStore";
 import { useRouter, usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
+import { useAuthModalStore } from "@/store/useAuthModalStore";
 
 export default function Navbar() {
   const router = useRouter();
@@ -12,6 +14,8 @@ export default function Navbar() {
   const [menuHeight, setMenuHeight] = useState<number>(0);
   const [mounted, setMounted] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { data: session } = useSession();
+  const { openModal } = useAuthModalStore();
   
   // Object penampung DOM refs untuk mengukur tinggi setiap kategori dropdown
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -112,19 +116,48 @@ export default function Navbar() {
                 <Search size={20} strokeWidth={2} />
             </button>
             <button 
-              onClick={() => router.push('/cart')}
-              className="text-gray-600 hover:text-black transition-colors relative"
-            >
-                <ShoppingBag size={20} strokeWidth={2} />
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                    {totalItems}
-                  </span>
-                )}
-            </button>
-            <button className="text-gray-600 hover:text-black transition-colors">
-                <User size={20} strokeWidth={2} />
-            </button>
+          onClick={() => {
+            // Jika belum login, buka modal dan tahan di halaman saat ini
+            if (!session) {
+              openModal();
+              return;
+            }
+            // Jika sudah login, baru boleh ke halaman keranjang
+            router.push('/cart');
+          }}
+          className="text-gray-600 hover:text-black transition-colors relative"
+        >
+            <ShoppingBag size={20} strokeWidth={2} />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
+        </button>
+            <button 
+            onClick={async () => {
+              if (session) {
+                // 1. Keluar dari akun tanpa me-refresh halaman
+                await signOut({ redirect: false });
+                // 2. Pindahkan paksa ke halaman utama (Home)
+                router.push('/');
+                // 3. Buka Pop-up Login secara otomatis
+                openModal();
+              } else {
+                openModal();
+              }
+            }} 
+            className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors"
+          >
+            {session?.user?.image ? (
+              <img src={session.user.image} className="w-6 h-6 rounded-full" alt="Profile"/>
+            ) : (
+              <User size={20} strokeWidth={2} />
+            )}
+            <span className="font-bold text-sm hidden sm:block">
+              {session ? "Logout" : "Login"}
+            </span>
+          </button>
           </div>
         </div>
       </div>

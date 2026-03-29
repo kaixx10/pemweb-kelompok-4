@@ -4,11 +4,15 @@ import { useCartStore } from "@/store/useCartStore";
 import { ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useAuthModalStore } from "@/store/useAuthModalStore";
 
 export default function ProductGrid() {
   const router = useRouter();
   const [addedNotification, setAddedNotification] = useState<number | null>(null);
   const { addToCart } = useCartStore();
+  const { data: session } = useSession();
+  const { openModal } = useAuthModalStore();
 
   const dummyProducts = [
     { id: 1, name: "Xiaomi 17 Ultra", price: "Rp 19.999.000", img: "📱", desc: "Leica 200MP", featured: true },
@@ -26,6 +30,10 @@ export default function ProductGrid() {
       e.stopPropagation();
       e.preventDefault();
     }
+    if (!session) {
+    openModal();
+    return;
+  }
     addToCart({
       id: product.id,
       name: product.name,
@@ -42,10 +50,24 @@ export default function ProductGrid() {
       e.stopPropagation();
       e.preventDefault();
     }
-    handleAddToCart(product);
+    
+    // 1. CEK LOGIN DULU SEBELUM MELAKUKAN APAPUN
+    if (!session) {
+      openModal(); // Munculkan pop-up login
+      return;      // Hentikan proses, jangan pindah halaman!
+    }
+
+    // 2. JIKA SUDAH LOGIN, BARU MASUKKAN KERANJANG DAN PINDAH HALAMAN
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      img: product.img,
+      desc: product.desc,
+    });
     router.push("/payment");
   };
-
+  
   return (
     <section className="w-full bg-transparent py-8 pb-16">
       <div className="max-w-[1440px] mx-auto px-6 lg:px-10">
