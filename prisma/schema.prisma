@@ -1,13 +1,84 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
+}
+
+model category {
+  id      String    @id
+  name    String
+  slug    String    @unique(map: "Category_slug_key")
+  product product[]
+}
+
+model order {
+  id            String       @id
+  userId        String
+  total         Decimal      @db.Decimal(15, 2)
+  status        order_status @default(PENDING)
+  paymentStatus String?
+  paymentId     String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime
+  user          user         @relation(fields: [userId], references: [id], map: "Order_userId_fkey")
+  orderitem     orderitem[]
+
+  @@index([userId], map: "Order_userId_fkey")
+}
+
+model orderitem {
+  id        String  @id
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal @db.Decimal(15, 2)
+  order     order   @relation(fields: [orderId], references: [id], map: "OrderItem_orderId_fkey")
+  product   product @relation(fields: [productId], references: [id], map: "OrderItem_productId_fkey")
+
+  @@index([orderId], map: "OrderItem_orderId_fkey")
+  @@index([productId], map: "OrderItem_productId_fkey")
+}
+
+model product {
+  id          String      @id
+  name        String
+  slug        String      @unique(map: "Product_slug_key")
+  description String      @db.Text
+  price       Decimal     @db.Decimal(15, 2)
+  stock       Int         @default(0)
+  images      String?     @db.LongText
+  categoryId  String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime
+  orderitem   orderitem[]
+  category    category    @relation(fields: [categoryId], references: [id], map: "Product_categoryId_fkey")
+
+  @@index([categoryId], map: "Product_categoryId_fkey")
+}
+
+model user {
+  id        String    @id
+  name      String?
+  email     String?   @unique(map: "User_email_key")
+  password  String?
+  role      user_role @default(USER)
+  image     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+  order     order[]
+}
+
+enum order_status {
+  PENDING
+  PAID
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
+enum user_role {
+  USER
+  ADMIN
 }
