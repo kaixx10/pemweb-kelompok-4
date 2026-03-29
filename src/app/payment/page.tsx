@@ -20,7 +20,7 @@ export default function PaymentPage() {
     return (
       <>
         <Navbar />
-        <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-12">
+        <div className="flex-1 max-w-[1440px] mx-auto w-full px-6 lg:px-10 py-12">
           <div className="h-96 flex items-center justify-center">Loading...</div>
         </div>
         <Footer />
@@ -67,7 +67,7 @@ export default function PaymentPage() {
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
             <Link href="/cart">
-              <button className="flex items-center gap-2 text-gray-600 hover:text-[#ff6700] transition-colors">
+              <button className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors">
                 <ArrowLeft size={20} />
                 <span className="font-medium">Kembali</span>
               </button>
@@ -87,7 +87,7 @@ export default function PaymentPage() {
                     <input
                       type="text"
                       placeholder="Masukkan nama lengkap"
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-[#ff6700]"
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
                     />
                   </div>
                   <div>
@@ -95,7 +95,7 @@ export default function PaymentPage() {
                     <textarea
                       placeholder="Masukkan alamat lengkap"
                       rows={3}
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-[#ff6700]"
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -104,7 +104,7 @@ export default function PaymentPage() {
                       <input
                         type="text"
                         placeholder="Jakarta"
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-[#ff6700]"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
                       />
                     </div>
                     <div>
@@ -112,7 +112,7 @@ export default function PaymentPage() {
                       <input
                         type="text"
                         placeholder="12345"
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-[#ff6700]"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
                       />
                     </div>
                   </div>
@@ -128,7 +128,7 @@ export default function PaymentPage() {
                       key={method.id}
                       className={`flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all ${
                         paymentMethod === method.id
-                          ? 'border-[#ff6700] bg-orange-50'
+                          ? 'border-black bg-gray-50'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
@@ -193,12 +193,12 @@ export default function PaymentPage() {
 
                 <div className="flex justify-between mb-8">
                   <span className="font-bold text-gray-900">Total</span>
-                  <span className="font-bold text-2xl text-[#ff6700]">
+                  <span className="font-bold text-2xl text-black">
                     {formatPrice(totalPrice * 1.1)}
                   </span>
                 </div>
 
-                <button className="w-full bg-[#ff6700] text-white py-3 rounded-lg font-bold text-lg hover:bg-[#ff6700]/90 transition-colors">
+                <button className="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-black/90 transition-colors">
                   Bayar Sekarang
                 </button>
               </div>

@@ -8,7 +8,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Bento Store | Modern Online Shop",
+  title: "Neo | Modern Online Shop",
   description: "E-Commerce modern dengan gaya Bento UI dan Grid Xiaomi",
 };
 

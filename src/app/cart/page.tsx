@@ -21,7 +21,7 @@ export default function CartPage() {
     return (
       <>
         <Navbar />
-        <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-12">
+        <div className="flex-1 max-w-[1440px] mx-auto w-full px-6 lg:px-10 py-12">
           <div className="h-96 flex items-center justify-center">Loading...</div>
         </div>
         <Footer />
@@ -44,11 +44,11 @@ export default function CartPage() {
     <>
       <Navbar />
       <div className="flex-1 w-full bg-gray-50 py-8 px-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1440px] mx-auto">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
             <Link href="/">
-              <button className="flex items-center gap-2 text-gray-600 hover:text-[#ff6700] transition-colors">
+              <button className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors">
                 <ArrowLeft size={20} />
                 <span className="font-medium">Kembali</span>
               </button>
@@ -63,7 +63,7 @@ export default function CartPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Keranjang Kosong</h2>
               <p className="text-gray-500 mb-8">Belum ada produk di keranjang Anda. Mari mulai berbelanja!</p>
               <Link href="/">
-                <button className="bg-[#ff6700] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#ff6700]/90 transition-colors">
+                <button className="bg-black text-white px-8 py-3 rounded-lg font-semibold hover:bg-black/90 transition-colors">
                   Lanjutkan Belanja
                 </button>
               </Link>
@@ -87,7 +87,7 @@ export default function CartPage() {
                       <div className="flex-1">
                         <h3 className="font-bold text-gray-900 text-lg mb-1">{item.name}</h3>
                         <p className="text-gray-500 text-sm mb-4">{item.desc}</p>
-                        <p className="font-bold text-[#ff6700] text-lg">{item.price}</p>
+                        <p className="font-bold text-black text-lg">{item.price}</p>
                       </div>
 
                       {/* Quantity Controls */}
@@ -150,21 +150,21 @@ export default function CartPage() {
 
                   <div className="flex justify-between mb-8">
                     <span className="font-bold text-gray-900">Total</span>
-                    <span className="font-bold text-2xl text-[#ff6700]">
+                    <span className="font-bold text-2xl text-black">
                       {formatPrice(totalPrice)}
                     </span>
                   </div>
 
                   <button 
                     onClick={() => router.push('/payment')}
-                    className="w-full bg-[#ff6700] text-white py-3 rounded-lg font-bold text-lg hover:bg-[#ff6700]/90 transition-colors mb-3"
+                    className="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-black/90 transition-colors mb-3"
                   >
                     Checkout
                   </button>
 
                   <button
                     onClick={() => emptyCart()}
-                    className="w-full border-2 border-red-200 text-red-600 py-3 rounded-lg font-bold hover:bg-red-50 transition-colors"
+                    className="w-full border-2 border-red-500 text-red-500 py-3 rounded-lg font-bold hover:bg-red-50 hover:text-red-600 transition-colors"
                   >
                     Kosongkan Keranjang
                   </button>
