@@ -4,7 +4,6 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
 import { Eye, EyeOff } from "lucide-react"; // Ditambahkan untuk icon mata
-import Swal from 'sweetalert2';
 
 export default function AuthModal() {
   const { isOpen, closeModal } = useAuthModalStore();
@@ -23,7 +22,6 @@ export default function AuthModal() {
 
     try {
       if (isLogin) {
-        // --- PROSES LOGIN MANUAL ---
         const res = await signIn("credentials", {
           redirect: false,
           email: formData.email,
@@ -32,7 +30,10 @@ export default function AuthModal() {
         
         if (!res?.ok) {
           const pesanError = res?.error || "";
+          
+          // Logika pemisahan error secara spesifik
           if (pesanError.includes("NOT_REGISTERED")) {
+            // Jika akun TIDAK ADA di database -> Pindah ke registrasi
             setError("Akun belum terdaftar. Mengalihkan ke pendaftaran...");
             setTimeout(() => {
               setIsLogin(false);
@@ -40,28 +41,21 @@ export default function AuthModal() {
               setError("Silakan daftar akun baru di sini.");
             }, 2000);
           } else if (pesanError.includes("Password salah")) {
+            // Jika akun ADA tapi password SALAH -> Tetap di halaman login
             setError("Password yang Anda masukkan salah.");
           } else if (pesanError.includes("Google")) {
             setError(pesanError);
           } else {
+            // Fallback (berjaga-jaga jika pesan disembunyikan NextAuth)
             setError("Email atau password salah.");
           }
         } else {
-          // Login berhasil (Pop-up SweetAlert)
+          // Login berhasil
           closeModal();
-          Swal.fire({
-            title: 'Berhasil!',
-            text: 'Anda berhasil masuk ke akun.',
-            icon: 'success',
-            confirmButtonColor: '#ff6700',
-            timer: 1500,
-            showConfirmButton: false
-          }).then(() => {
-            window.location.reload(); 
-          });
+          window.location.reload();
         }
       } else {
-        // --- PROSES REGISTRASI & AUTO-LOGIN ---
+        // Proses Registrasi
         const res = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -71,35 +65,10 @@ export default function AuthModal() {
         const data = await res.json();
         
         if (res.ok) {
-          // 1. Registrasi Sukses, sistem langsung melakukan Login secara otomatis
-          const loginRes = await signIn("credentials", {
-            redirect: false,
-            email: formData.email,
-            password: formData.password,
-          });
-
-          // 2. Jika Auto-Login sukses
-          if (loginRes?.ok) {
-            setError("");
-            setFormData({ name: "", email: "", password: "" });
-            closeModal(); // Tutup modal
-            
-            // Tampilkan SweetAlert khusus
-            Swal.fire({
-              title: 'Selamat Datang!',
-              text: 'Akun berhasil dibuat.',
-              icon: 'success',
-              confirmButtonColor: '#ff6700',
-              timer: 2000,
-              showConfirmButton: false
-            }).then(() => {
-              window.location.reload(); // Refresh halaman agar navbar berubah menjadi Logout
-            });
-          } else {
-            // Berjaga-jaga jika auto-login gagal
-            setError("Registrasi berhasil, tapi gagal masuk otomatis. Silakan login manual.");
-            setIsLogin(true);
-          }
+          setError("");
+          setFormData({ name: "", email: "", password: "" });
+          alert("Registrasi berhasil! Silakan masuk dengan akun Anda.");
+          setIsLogin(true); 
         } else {
           setError(data.error || "Terjadi kesalahan saat registrasi");
         }
@@ -110,7 +79,6 @@ export default function AuthModal() {
       setLoading(false);
     }
   };
-
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
