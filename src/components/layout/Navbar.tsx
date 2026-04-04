@@ -6,6 +6,7 @@ import { useCartStore } from "@/store/useCartStore";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
+import { useFilterStore } from "@/store/useFilterStore";
 
 export default function Navbar() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function Navbar() {
 
   // Cart store
   const { getTotalItems } = useCartStore();
+  const { searchQuery, setSearchQuery, sortOrder, setSortOrder } = useFilterStore();
   const totalItems = mounted ? getTotalItems() : 0;
 
   useEffect(() => {
@@ -70,50 +72,73 @@ export default function Navbar() {
         <ul className="hidden xl:flex flex-1 items-center h-full z-[60]">
             
             <li className="h-full flex items-center z-[60]" onMouseEnter={() => handleMouseEnter('store')}>
-              <Link href="/" className={`text-[15px] font-medium cursor-pointer px-4 xl:px-5 relative flex items-center h-full pt-[2px] ${activeMenu === 'store' || pathname === '/' ? 'text-black' : 'text-gray-800'}`}>
+              <Link href="/" className={`text-[15px] font-medium cursor-pointer px-4 xl:px-5 relative flex items-center h-full pt-[2px] transition-colors hover:text-[#ff6700] ${activeMenu === 'store' || pathname === '/' ? 'text-[#ff6700]' : 'text-gray-800'}`}>
                 Store
-                <span className={`absolute bottom-0 left-4 xl:left-5 right-4 xl:right-5 h-[2px] transition-colors ${activeMenu === 'store' || pathname === '/' ? 'bg-black' : 'bg-transparent'}`}></span>
+                <span className={`absolute bottom-0 left-4 xl:left-5 right-4 xl:right-5 h-[2px] transition-colors ${activeMenu === 'store' || pathname === '/' ? 'bg-[#ff6700]' : 'bg-transparent'}`}></span>
               </Link>
             </li>
             
             <li className="h-full flex items-center z-[60]" onMouseEnter={() => handleMouseEnter('mobile')}>
-              <span className={`text-[15px] font-medium cursor-pointer px-4 xl:px-5 relative flex items-center h-full pt-[2px] ${activeMenu === 'mobile' || pathname === '/mobile' ? 'text-black' : 'text-gray-800'}`}>
+              <span className={`text-[15px] font-medium cursor-pointer px-4 xl:px-5 relative flex items-center h-full pt-[2px] transition-colors hover:text-[#ff6700] ${activeMenu === 'mobile' || pathname === '/mobile' ? 'text-[#ff6700]' : 'text-gray-800'}`}>
                 Mobile
-                <span className={`absolute bottom-0 left-4 xl:left-5 right-4 xl:right-5 h-[2px] transition-colors ${activeMenu === 'mobile' || pathname === '/mobile' ? 'bg-black' : 'bg-transparent'}`}></span>
+                <span className={`absolute bottom-0 left-4 xl:left-5 right-4 xl:right-5 h-[2px] transition-colors ${activeMenu === 'mobile' || pathname === '/mobile' ? 'bg-[#ff6700]' : 'bg-transparent'}`}></span>
               </span>
             </li>
 
             <li className="h-full flex items-center z-[60]" onMouseEnter={() => handleMouseEnter('wearables')}>
-               <span className={`text-[15px] font-medium cursor-pointer px-4 xl:px-5 relative flex items-center h-full pt-[2px] ${activeMenu === 'wearables' || pathname === '/wearables' ? 'text-black' : 'text-gray-800'}`}>
+               <span className={`text-[15px] font-medium cursor-pointer px-4 xl:px-5 relative flex items-center h-full pt-[2px] transition-colors hover:text-[#ff6700] ${activeMenu === 'wearables' || pathname === '/wearables' ? 'text-[#ff6700]' : 'text-gray-800'}`}>
                 Wearables
-                <span className={`absolute bottom-0 left-4 xl:left-5 right-4 xl:right-5 h-[2px] transition-colors ${activeMenu === 'wearables' || pathname === '/wearables' ? 'bg-black' : 'bg-transparent'}`}></span>
+                <span className={`absolute bottom-0 left-4 xl:left-5 right-4 xl:right-5 h-[2px] transition-colors ${activeMenu === 'wearables' || pathname === '/wearables' ? 'bg-[#ff6700]' : 'bg-transparent'}`}></span>
               </span>
             </li>
 
             <li className="h-full flex items-center z-[60]" onMouseEnter={() => handleMouseEnter('lifestyle')}>
-              <span className={`text-[15px] font-medium cursor-pointer px-4 xl:px-5 relative flex items-center h-full pt-[2px] ${activeMenu === 'lifestyle' || pathname === '/lifestyle' ? 'text-black' : 'text-gray-800'}`}>
+              <span className={`text-[15px] font-medium cursor-pointer px-4 xl:px-5 relative flex items-center h-full pt-[2px] transition-colors hover:text-[#ff6700] ${activeMenu === 'lifestyle' || pathname === '/lifestyle' ? 'text-[#ff6700]' : 'text-gray-800'}`}>
                 Lifestyle
-                <span className={`absolute bottom-0 left-4 xl:left-5 right-4 xl:right-5 h-[2px] transition-colors ${activeMenu === 'lifestyle' || pathname === '/lifestyle' ? 'bg-black' : 'bg-transparent'}`}></span>
+                <span className={`absolute bottom-0 left-4 xl:left-5 right-4 xl:right-5 h-[2px] transition-colors ${activeMenu === 'lifestyle' || pathname === '/lifestyle' ? 'bg-[#ff6700]' : 'bg-transparent'}`}></span>
               </span>
             </li>
 
             <li className="h-full flex items-center z-[60]" onMouseEnter={() => handleMouseEnter('smart home')}>
-              <span className={`text-[15px] font-medium cursor-pointer px-4 xl:px-5 relative flex items-center h-full pt-[2px] ${activeMenu === 'smart home' || pathname === '/smart-home' ? 'text-black' : 'text-gray-800'}`}>
+              <span className={`text-[15px] font-medium cursor-pointer px-4 xl:px-5 relative flex items-center h-full pt-[2px] transition-colors hover:text-[#ff6700] ${activeMenu === 'smart home' || pathname === '/smart-home' ? 'text-[#ff6700]' : 'text-gray-800'}`}>
                 Smart Home
-                <span className={`absolute bottom-0 left-4 xl:left-5 right-4 xl:right-5 h-[2px] transition-colors ${activeMenu === 'smart home' || pathname === '/smart-home' ? 'bg-black' : 'bg-transparent'}`}></span>
+                <span className={`absolute bottom-0 left-4 xl:left-5 right-4 xl:right-5 h-[2px] transition-colors ${activeMenu === 'smart home' || pathname === '/smart-home' ? 'bg-[#ff6700]' : 'bg-transparent'}`}></span>
               </span>
             </li>
         </ul>
 
         {/* Right Nav Options */}
         <div className="flex items-center gap-6 ml-auto z-[60] mr-2 lg:mr-4" onMouseEnter={() => handleMouseEnter('none')}>
-          <span className="text-[13px] font-medium text-gray-600 hover:text-black cursor-pointer hidden md:block">Discover</span>
-          <span className="text-[13px] font-medium text-gray-600 hover:text-black cursor-pointer hidden md:block">Support</span>
-          <span className="text-[13px] font-medium text-gray-600 hover:text-black cursor-pointer mr-4 hidden xl:block">Community</span>
+<span className="text-[13px] font-medium text-gray-600 hover:text-[#ff6700] transition-colors cursor-pointer hidden md:block">Discover</span>
+<span className="text-[13px] font-medium text-gray-600 hover:text-[#ff6700] transition-colors cursor-pointer hidden md:block">Support</span>
+<span className="text-[13px] font-medium text-gray-600 hover:text-[#ff6700] transition-colors cursor-pointer mr-4 hidden xl:block">Community</span>
            
           <div className="flex items-center gap-5 border-l border-gray-200 pl-6">
-            <button className="text-gray-600 hover:text-black transition-colors">
-                <Search size={20} strokeWidth={2} />
+            <button className="text-gray-600 hover:text-[#ff6700] transition-colors relative">
+                {/* 1. Fitur Search & Sort (Versi Ramping) */}
+        <div className="flex items-center gap-1.5 md:gap-3 mr-2 md:mr-4">
+          {/* Kolom Pencarian */}
+          <div className="flex items-center gap-1.5 bg-gray-100 px-2.5 py-1.5 md:px-3 md:py-2 rounded-full border border-gray-200 focus-within:border-black transition-colors">
+            <Search size={16} className="text-gray-500" />
+            <input
+              type="text"
+              placeholder="Cari..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-transparent outline-none text-[11px] md:text-xs w-20 sm:w-24 md:w-32 text-black placeholder-gray-400"
+            />
+          </div>
+          {/* Dropdown Urutkan Harga */}
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as any)}
+            className="bg-gray-100 text-[11px] md:text-xs font-semibold text-gray-700 outline-none px-2 py-1.5 md:px-3 md:py-2 rounded-full border border-gray-200 cursor-pointer hover:bg-gray-200 transition-colors hidden sm:block"
+          >
+            <option value="none">Urutkan</option>
+            <option value="asc">Termurah</option>
+            <option value="desc">Tertinggi</option>
+          </select>
+        </div>
             </button>
             <button 
           onClick={() => {
@@ -147,7 +172,7 @@ export default function Navbar() {
                 openModal();
               }
             }} 
-            className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors"
+            className="flex items-center gap-2 text-gray-600 hover:text-[#ff6700] transition-colors"
           >
             {session?.user?.image ? (
               <img src={session.user.image} className="w-6 h-6 rounded-full" alt="Profile"/>
