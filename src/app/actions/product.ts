@@ -119,3 +119,68 @@ export async function deleteProduct(id: string) {
     return { success: false, error: error.message || "Terjadi kesalahan sistem." };
   }
 }
+
+/**
+ * GET CATEGORIES
+ * Fungsi untuk mengambil semua kategori untuk dropdown form
+ */
+export async function getCategories() {
+  try {
+    let categories = await prisma.category.findMany({
+      orderBy: { name: 'asc' }
+    });
+
+    // AUTO-SEED: Pastikan kategori dari screenshot ada di database
+    const xiaomiCategories = [
+      "Smart Watches", "Phones", "Tablets", "Chargings", "Outdoors", 
+      "Offices", "Personal Care", "Health & Fitness", "Tools", 
+      "TVs & HA", "Vacuum Cleaners", "Environment", "Kitchen & Sec"
+    ];
+
+    let categoriesAdded = false;
+    for (let i = 0; i < xiaomiCategories.length; i++) {
+      const catName = xiaomiCategories[i];
+      const exists = categories.find(c => c.name === catName);
+      if (!exists) {
+        await prisma.category.create({
+          data: {
+            id: `cat_${catName.replace(/[^a-zA-Z0-9]/g, '')}_${i}`,
+            name: catName,
+            slug: catName.toLowerCase().replace(/ & /g, '-').replace(/[^a-z0-9]+/g, '-')
+          }
+        });
+        categoriesAdded = true;
+      }
+    }
+
+    if (categoriesAdded) {
+      categories = await prisma.category.findMany({ orderBy: { name: 'asc' }});
+    }
+
+    return { success: true, data: categories };
+  } catch (error: any) {
+    console.error("Gagal mengambil kategori:", error);
+    return { success: false, error: error.message || "Gagal memuat kategori." };
+  }
+}
+
+/**
+ * GET SINGLE PRODUCT
+ * Fungsi untuk mengambil satu produk beserta ID untuk form Edit
+ */
+export async function getProduct(id: string) {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id }
+    });
+    if (!product) throw new Error("Produk tidak ditemukan");
+    const safeProduct = {
+      ...product,
+      price: Number(product.price)
+    };
+    return { success: true, data: safeProduct };
+  } catch (error: any) {
+    console.error("Gagal mengambil produk:", error);
+    return { success: false, error: error.message || "Gagal memuat produk." };
+  }
+}

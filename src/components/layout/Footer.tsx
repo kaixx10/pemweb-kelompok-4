@@ -1,7 +1,15 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Mail, Heart, Play, Share2 } from "lucide-react";
 
 export default function Footer() {
+  const pathname = usePathname() || "";
+  
+  // Jika sedang di halaman admin, sembunyikan Footer utama
+  if (pathname.startsWith('/admin')) return null;
+
   return (
     <footer className="w-full bg-[var(--background)] mt-auto border-t border-gray-100">
       {/* Main Footer Content */}

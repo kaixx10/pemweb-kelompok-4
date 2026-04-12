@@ -1,4 +1,4 @@
-import HeroBento from "@/components/home/HeroBento";
+import HeroNeo from "@/components/home/HeroNeo";
 import ProductGrid from "@/components/home/ProductGrid";
 import { prisma } from "@/lib/prisma";
 
@@ -18,7 +18,7 @@ export default async function Home() {
     <main className="min-h-screen bg-[var(--background)] flex flex-col font-sans">
       <div className="flex-1 w-full relative pb-16">
         {/* Bento UI Showcase Section */}
-        <HeroBento />
+        <HeroNeo />
         
         {/* Product Catalog Standard Grid Section */}
         <ProductGrid initialProducts={safeProducts} />
