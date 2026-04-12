@@ -29,7 +29,7 @@ export async function GET(request: Request) {
                 emoji = Array.isArray(parsed) ? parsed[0] : parsed;
             }
         } catch (e) {
-            emoji = imageStr;
+            emoji = imageStr || "📦";
         }
 
         return {
