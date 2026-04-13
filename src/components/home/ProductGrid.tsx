@@ -17,6 +17,9 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
   const router = useRouter();
   const [addedNotification, setAddedNotification] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+ 
+  const [selectedVariant, setSelectedVariant] = useState<any | null>(null);
+  
   const [mounted, setMounted] = useState(false);
 
   const { addToCart } = useCartStore();
@@ -53,36 +56,44 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
     return {
       id: p.id,
       name: p.name,
-      price: formatIDR(p.price),
-      rawPrice: Number(p.price), // Data mentah untuk dihitung algoritma Sort
+      price: formatIDR(p.basePrice || p.price), // Harga untuk Tampilan (Rp)
+      basePrice: Number(p.basePrice || p.price), // Harga Angka Mentah untuk Keranjang
+      rawPrice: Number(p.basePrice || p.price), // Harga Angka Mentah untuk Sort
       img: emoji,
       desc: p.description,
-      featured: p.slug.includes('ultra')
+      featured: p.slug?.includes('ultra'),
+      variants: p.variants || [], // Menyimpan data varian!
     };
   });
+
+  // Fungsi untuk membuka Modal & otomatis memilih varian pertama (jika ada)
+  const openProductModal = (product: any) => {
+    setSelectedProduct(product);
+    if (product.variants && product.variants.length > 0) {
+      setSelectedVariant(product.variants[0]);
+    } else {
+      setSelectedVariant(null);
+    }
+  };
 
   useEffect(() => {
     if (viewProductId) {
       const found = products.find(p => p.id === viewProductId);
-      if (found) {
-        setSelectedProduct(found);
-      }
+      if (found) openProductModal(found);
     }
-  }, [viewProductId, products]);
+  }, [viewProductId]); // (Menghapus 'products' dari dependency agar tidak error looping)
 
   // ==========================================
-  // ALGORITMA SORT DIMULAI DI SINI
+  // ALGORITMA SORT 
   // ==========================================
   let displayedProducts = [...products];
 
-  // 1. Algoritma Pengurutan (Sorting)
   if (sortOrder === "asc") {
-    displayedProducts.sort((a, b) => a.rawPrice - b.rawPrice); // Termurah
+    displayedProducts.sort((a, b) => a.rawPrice - b.rawPrice);
   } else if (sortOrder === "desc") {
-    displayedProducts.sort((a, b) => b.rawPrice - a.rawPrice); // Termahal
+    displayedProducts.sort((a, b) => b.rawPrice - a.rawPrice);
   }
 
-  // Cek apakah user sedang menggunakan fitur filter
   const isFiltering = sortOrder !== "none";
   // ==========================================
 
@@ -91,14 +102,22 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
       e.stopPropagation();
       e.preventDefault();
     }
+    
+    // Jika produk punya varian, jangan langsung masuk keranjang! Paksa Buka Modal.
+    if (product.variants && product.variants.length > 0) {
+      openProductModal(product);
+      return;
+    }
+
     if (!session) {
       openModal();
       return;
     }
+    
     addToCart({
       id: product.id,
       name: product.name,
-      price: product.price,
+      price: product.basePrice, // Sekarang mengambil basePrice yang benar
       img: product.img,
       desc: product.desc,
     });
@@ -111,19 +130,63 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
       e.stopPropagation();
       e.preventDefault();
     }
+    
+    if (product.variants && product.variants.length > 0) {
+      openProductModal(product);
+      return;
+    }
+
     if (!session) {
       openModal();
       return;
     }
+    
     addToCart({
       id: product.id,
       name: product.name,
-      price: product.price,
+      price: product.basePrice,
       img: product.img,
       desc: product.desc,
     });
     router.push("/payment");
   };  
+
+  const handleModalAddToCart = () => {
+    if (!session) {
+      openModal();
+      return;
+    }
+    
+    // Jika ada varian yang dipilih, gabungkan namanya!
+    addToCart({
+      id: selectedVariant ? `${selectedProduct.id}-${selectedVariant.id || selectedVariant.color}` : selectedProduct.id,
+      name: selectedVariant ? `${selectedProduct.name} (${selectedVariant.color} - ${selectedVariant.storage})` : selectedProduct.name,
+      price: selectedVariant ? Number(selectedVariant.price) : selectedProduct.basePrice,
+      img: selectedProduct.img,
+      desc: selectedProduct.desc,
+    });
+    
+    setAddedNotification(selectedProduct.id);
+    setTimeout(() => setAddedNotification(null), 2000);
+    setSelectedProduct(null); // Tutup Modal
+  };
+
+  const handleModalBuyNow = () => {
+    if (!session) {
+      openModal();
+      return;
+    }
+    
+    addToCart({
+      id: selectedVariant ? `${selectedProduct.id}-${selectedVariant.id || selectedVariant.color}` : selectedProduct.id,
+      name: selectedVariant ? `${selectedProduct.name} (${selectedVariant.color} - ${selectedVariant.storage})` : selectedProduct.name,
+      price: selectedVariant ? Number(selectedVariant.price) : selectedProduct.basePrice,
+      img: selectedProduct.img,
+      desc: selectedProduct.desc,
+    });
+    
+    router.push("/payment");
+  };
 
   if (!products.length) {
     return (
@@ -133,11 +196,10 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
     );
   }
 
-  // Helper function untuk merender Card Produk agar tidak menulis kode berulang
   const renderProductCard = (product: any) => (
     <div 
       key={product.id} 
-      onClick={() => setSelectedProduct(product)}
+      onClick={() => openProductModal(product)} // Gunakan openProductModal
       className="bg-white rounded-[2rem] hover:-translate-y-1 hover:shadow-xl shadow-gray-200/50 transition-all duration-300 flex flex-col items-center justify-between p-6 md:p-8 text-center cursor-pointer group border border-gray-100 relative"
     >
       {product.name.includes("Mijia") || product.name.includes("17") ? 
@@ -153,7 +215,10 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
       </button>
       <div className="w-24 h-24 md:w-32 md:h-32 mb-6 mt-4 flex items-center justify-center text-6xl md:text-7xl group-hover:scale-110 transition-transform duration-500 drop-shadow-lg flex-shrink-0 relative">
         {product.img && (product.img.startsWith('http') || product.img.startsWith('/')) ? (
-          <img src={product.img} alt={product.name} className="w-full h-full object-contain drop-shadow-md" />
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={product.img} alt={product.name} className="w-full h-full object-contain drop-shadow-md" />
+          </>
         ) : (
           product.img
         )}
@@ -185,7 +250,6 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
   
         <div className="flex flex-col gap-6">
            {isFiltering ? (
-             // TAMPILAN JIKA SEDANG MENCARI (Hanya Grid, Banner disembunyikan)
              <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-2">
                {displayedProducts.length > 0 ? (
                  displayedProducts.map(renderProductCard)
@@ -196,10 +260,9 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
                )}
              </div>
            ) : (
-             // TAMPILAN NORMAL (Ada Banner Utama + Grid produk kecil)
              <>
                {products.length > 0 && (
-                 <div className="w-full bg-white rounded-[2rem] flex flex-col md:flex-row overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                 <div onClick={() => openProductModal(products[0])} className="w-full bg-white rounded-[2rem] flex flex-col md:flex-row overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 border border-gray-100">
                     <div className="w-full md:w-1/2 bg-[#1a1a1a] p-8 md:p-12 flex items-center justify-center relative overflow-hidden group min-h-[300px] md:min-h-0">
                         <div className="relative w-[70%] aspect-[2.2/1] bg-gradient-to-br from-[#2a2a2a] to-black border border-gray-700/50 rounded-2xl md:rounded-[2rem] shadow-2xl flex items-center justify-center -rotate-6 group-hover:-rotate-3 transition-transform duration-500 z-10 before:absolute before:inset-0 before:bg-gradient-to-t before:from-white/5 before:to-transparent before:rounded-2xl md:before:rounded-[2rem]">
                             <div className="text-white text-[10px] sm:text-xs font-bold font-sans tracking-widest absolute left-8 top-1/2 -translate-y-1/2 opacity-60">NEO</div>
@@ -239,20 +302,19 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
                 <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-2">
                    {products.filter(p => !p.featured).slice(0, 4).map(renderProductCard)}
                 </div>
-              </>
+             </>
            )}
         </div>
       </div>
 
-      {/* QUICK VIEW / DETAIL PRODUK MODAL */}
+      {/* QUICK VIEW / DETAIL PRODUK MODAL YANG SUDAH DILENGKAPI VARIAN */}
       {selectedProduct && mounted && createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setSelectedProduct(null)}>
           
           <div 
             className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row animate-in zoom-in-95 duration-200 max-h-[90vh] md:max-h-[600px] cursor-default relative"
-            onClick={(e) => e.stopPropagation()} // Mencegah klik di dalam modal tertutup ke background
+            onClick={(e) => e.stopPropagation()} 
           >
-            {/* Tombol Tutup (X) */}
             <button 
               onClick={() => setSelectedProduct(null)} 
               className="absolute top-4 right-4 z-50 bg-white/80 backdrop-blur border border-gray-200 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border-red-200 w-10 h-10 rounded-full flex items-center justify-center font-bold transition-colors shadow-sm"
@@ -260,36 +322,59 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
               ✕
             </button>
 
-            {/* Bagian Kiri: Gambar Produk Raksasa */}
-            <div className="w-full md:w-1/2 bg-gray-50 flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-gray-100">
+            <div className="w-full md:w-1/2 bg-gray-50 flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-gray-100 relative">
                <div className="w-48 h-48 md:w-80 md:h-80 flex items-center justify-center text-[100px] md:text-[150px] drop-shadow-xl hover:scale-105 transition-transform duration-500">
                  {selectedProduct.img && (selectedProduct.img.startsWith('http') || selectedProduct.img.startsWith('/')) ? (
-                    <img src={selectedProduct.img} alt={selectedProduct.name} className="w-full h-full object-contain" />
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={selectedProduct.img} alt={selectedProduct.name} className="w-full h-full object-contain" />
+                    </>
                  ) : (
                     selectedProduct.img
                  )}
                </div>
             </div>
 
-            {/* Bagian Kanan: Detail & Aksi */}
             <div className="w-full md:w-1/2 bg-white flex flex-col p-8 md:p-12 overflow-y-auto">
                <div className="mb-6 border-b border-gray-100 pb-6">
-                 <span className="text-xs font-bold bg-[#ff6700]/10 text-[#ff6700] px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">Bintang Tamu</span>
+                 <span className="text-xs font-bold bg-[#ff6700]/10 text-[#ff6700] px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">Detail Produk</span>
                  <h2 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight mb-2 tracking-tight">
                    {selectedProduct.name}
                  </h2>
-                 <p className="text-3xl font-bold text-gray-900 tracking-tighter text-[#ff6700]">
-                   {selectedProduct.price}
+                 {/* HARGA OTOMATIS BERUBAH MENGIKUTI VARIAN */}
+                 <p className="text-3xl font-bold text-[#ff6700] tracking-tighter">
+                   {selectedVariant ? formatIDR(selectedVariant.price) : selectedProduct.price}
                  </p>
                </div>
                
                <div className="flex-1">
-                 <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Spesifikasi & Deskripsi Detail</h3>
+                 
+                 {selectedProduct.variants && selectedProduct.variants.length > 0 && (
+                   <div className="mb-6">
+                     <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Pilih Varian</h3>
+                     <div className="flex flex-wrap gap-2">
+                       {selectedProduct.variants.map((v: any, i: number) => (
+                         <button
+                           key={i}
+                           onClick={() => setSelectedVariant(v)}
+                           className={`px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all duration-200 ${
+                             selectedVariant?.id === v.id || selectedVariant?.color === v.color 
+                               ? 'border-[#ff6700] text-[#ff6700] bg-orange-50' 
+                               : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                           }`}
+                         >
+                           {v.color} {v.storage ? `- ${v.storage}` : ''}
+                         </button>
+                       ))}
+                     </div>
+                   </div>
+                 )}
+
+                 <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Spesifikasi & Deskripsi</h3>
                  <p className="text-gray-600 leading-relaxed text-sm">
                    {selectedProduct.desc}
                  </p>
                  
-                 {/* Garansi Fiktif Penambah Estetika */}
                  <div className="mt-6 flex gap-4 text-xs font-bold text-gray-500">
                     <div className="flex items-center gap-1.5"><span className="text-green-500">✔</span> Garansi Resmi 1 Tahun</div>
                     <div className="flex items-center gap-1.5"><span className="text-green-500">✔</span> Bebas Ongkir</div>
@@ -298,13 +383,13 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
 
                <div className="mt-8 flex gap-3">
                  <button 
-                   onClick={(e) => { handleAddToCart(selectedProduct, e); setSelectedProduct(null); }} 
+                   onClick={handleModalAddToCart} // Gunakan fungsi khusus Modal
                    className="flex-1 bg-white border-2 border-gray-900 text-gray-900 font-bold py-4 rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
                  >
                    <ShoppingCart size={18} strokeWidth={2.5} /> + Keranjang
                  </button>
                  <button 
-                   onClick={(e) => { handleBuyNow(selectedProduct, e); setSelectedProduct(null); }} 
+                   onClick={handleModalBuyNow} // Gunakan fungsi khusus Modal
                    className="flex-1 bg-gray-900 border-2 border-gray-900 text-white font-bold py-4 rounded-xl hover:bg-black transition-colors"
                  >
                    Beli Sekarang

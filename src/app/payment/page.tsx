@@ -163,21 +163,25 @@ export default function PaymentPage() {
 
                 {/* Order Items */}
                 <div className="space-y-3 mb-6 pb-6 border-b border-gray-100 max-h-96 overflow-y-auto">
-                  {items.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm">
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900">{item.name}</p>
-                        <p className="text-xs text-gray-500">x{item.quantity}</p>
-                      </div>
-                      <p className="font-semibold text-gray-900">
-                        {formatPrice(
-                          parseInt(item.price.replace(/[^\d]/g, ''), 10) * item.quantity
-                        )}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                  {items.map((item) => {
+                    // Cek cerdas: Jika harga sudah number, pakai langsung. Jika string, bersihkan dulu.
+                    const rawPrice = typeof item.price === 'number' 
+                      ? item.price 
+                      : parseInt(String(item.price || '0').replace(/[^\d]/g, ''), 10) || 0;
 
+                    return (
+                      <div key={item.id} className="flex justify-between text-sm">
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-900">{item.name}</p>
+                          <p className="text-xs text-gray-500">x{item.quantity}</p>
+                        </div>
+                        <p className="font-semibold text-gray-900">
+                          {formatPrice(rawPrice * item.quantity)}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
                 {/* Totals */}
                 <div className="space-y-3 mb-6 pb-6 border-b border-gray-100">
                   <div className="flex justify-between text-gray-600">

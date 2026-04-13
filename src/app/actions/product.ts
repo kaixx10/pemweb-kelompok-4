@@ -184,3 +184,119 @@ export async function getProduct(id: string) {
     return { success: false, error: error.message || "Gagal memuat produk." };
   }
 }
+
+/// Fungsi khusus untuk menyimpan produk yang memiliki varian
+export async function createProductWithVariants(formData: any, variants: any[]) {
+  try {
+    await checkAdmin();
+
+    const product = await prisma.product.create({
+      data: {
+        id: formData.id || `p${Date.now()}`,
+        name: formData.name,
+        description: formData.description,
+        slug: formData.slug,
+        images: formData.images,
+        
+        categoryId: formData.categoryId || formData.category,
+        stock: Number(formData.stock || 0),
+        
+        basePrice: Number(formData.price || formData.basePrice || 0),
+        
+        variants: {
+          create: variants.map((v: any) => ({
+            color: v.color,
+            storage: v.storage,
+            price: Number(v.price || 0)
+          }))
+        }
+      }
+    });
+    
+    // BERSIHKAN DECIMAL SEBELUM DIKIRIM KE CLIENT
+    const plainProduct = {
+      ...product,
+      basePrice: Number(product.basePrice)
+    };
+    
+    revalidatePath("/");
+    revalidatePath("/admin/products");
+    return { success: true, product: plainProduct };
+  } catch (error: any) {
+    console.error("Error Create Varian:", error);
+    return { success: false, error: error.message || "Gagal menyimpan produk." };
+  }
+}
+
+// Fungsi untuk mengambil data produk BESERTA variannya untuk halaman Edit
+export async function getProductWithVariants(id: string) {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: { variants: true } 
+    });
+    
+    if (!product) throw new Error("Produk tidak ditemukan");
+    
+    // BERSIHKAN DECIMAL SEBELUM DIKIRIM KE CLIENT
+    const safeProduct = {
+      ...product,
+      basePrice: Number(product.basePrice), // <- Ini yang menghilangkan Error
+      price: Number((product as any).basePrice || 0), 
+      categoryId: (product as any).categoryId,
+      variants: product.variants?.map((v: any) => ({
+        ...v,
+        price: Number(v.price) // <- Bersihkan Decimal di Varian juga
+      })) || []
+    };
+    
+    return { success: true, data: safeProduct };
+  } catch (error: any) {
+    console.error("Error Get Varian:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Fungsi untuk menyimpan perubahan data Edit
+export async function updateProductWithVariants(id: string, formData: any, variants: any[]) {
+  try {
+    await checkAdmin();
+
+    const product = await prisma.product.update({
+      where: { id },
+      data: {
+        name: formData.name,
+        description: formData.description,
+        slug: formData.slug,
+        images: formData.images,
+        
+        categoryId: formData.categoryId || formData.category,
+        stock: Number(formData.stock || 0),
+        
+        basePrice: Number(formData.price || formData.basePrice || 0),
+        
+        variants: {
+          deleteMany: {}, 
+          create: variants.map((v: any) => ({
+            color: v.color,
+            storage: v.storage,
+            price: Number(v.price || 0) 
+          }))
+        }
+      }
+    });
+    
+    // BERSIHKAN DECIMAL SEBELUM DIKIRIM KE CLIENT
+    const plainProduct = {
+      ...product,
+      basePrice: Number(product.basePrice)
+    };
+    
+    revalidatePath("/");
+    revalidatePath("/admin/products");
+    return { success: true, product: plainProduct };
+  } catch (error: any) {
+    console.error("Error Update Varian:", error);
+    return { success: false, error: error.message || "Gagal memperbarui produk" };
+  }
+}
