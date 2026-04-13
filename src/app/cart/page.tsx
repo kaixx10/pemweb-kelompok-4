@@ -79,14 +79,26 @@ export default function CartPage() {
                     >
                       {/* Product Image */}
                       <div className="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-xl flex items-center justify-center text-4xl">
-                        {item.img}
+                        {item.img && (item.img.startsWith('http') || item.img.startsWith('/')) ? (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img 
+        src={item.img} 
+        alt={item.name} 
+        className="w-full h-full object-contain drop-shadow-sm" 
+      />
+    </>
+  ) : (
+    // Jika bukan gambar (misal emoji), tampilkan teksnya saja
+    item.img
+  )}
                       </div>
 
                       {/* Product Details */}
                       <div className="flex-1">
                         <h3 className="font-bold text-gray-900 text-lg mb-1">{item.name}</h3>
                         <p className="text-gray-500 text-sm mb-4">{item.desc}</p>
-                        <p className="font-bold text-black text-lg">{item.price}</p>
+                        <p className="font-bold text-black text-lg">{formatPrice(Number(item.price))}</p>
                       </div>
 
                       {/* Quantity Controls */}

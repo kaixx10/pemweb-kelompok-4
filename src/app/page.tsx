@@ -3,24 +3,27 @@ import ProductGrid from "@/components/home/ProductGrid";
 import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
-  // Ambil semua produk dari database (terbaru di atas)
+  // 1. Ambil produk lengkap dengan variannya
   const products = await prisma.product.findMany({
     orderBy: { createdAt: "desc" },
+    include: { variants: true } // Pastikan menyertakan varian
   });
 
-  // Hapus Decimal yang tidak bisa dibaca oleh Next.js Client Component
+  // 2. Konversi SEMUA kolom Decimal (produk utama & varian) menjadi Number
   const safeProducts = products.map((p) => ({
     ...p,
-    price: Number(p.price)
+    basePrice: Number(p.basePrice), // Gunakan 'basePrice' sesuai database
+    variants: p.variants.map((v) => ({
+      ...v,
+      price: Number(v.price) // Konversi harga di dalam varian juga
+    }))
   }));
 
   return (
     <main className="min-h-screen bg-[var(--background)] flex flex-col font-sans">
       <div className="flex-1 w-full relative pb-16">
-        {/* Bento UI Showcase Section */}
         <HeroNeo />
-        
-        {/* Product Catalog Standard Grid Section */}
+        {/* Sekarang data sudah aman dikirim ke Client Component */}
         <ProductGrid initialProducts={safeProducts} />
       </div>
     </main>

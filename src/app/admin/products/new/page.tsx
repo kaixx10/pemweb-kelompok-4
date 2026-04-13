@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createProduct, getCategories } from "@/app/actions/product";
+import { createProductWithVariants, getCategories } from "@/app/actions/product";
 import Swal from "sweetalert2";
-import { ArrowLeft, Upload, Loader2, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Upload, Loader2, Image as ImageIcon, Trash2 } from "lucide-react"; 
 import Link from "next/link";
 
 export default function NewProductPage() {
@@ -21,7 +21,19 @@ export default function NewProductPage() {
     stock: 0,
     categoryId: "", // Will be set after fetch
   });
+  const [variants, setVariants] = useState([{ color: "", storage: "", price: 0 }]);
 
+  const addVariant = () => setVariants([...variants, { color: "", storage: "", price: 0 }]);
+  
+  const updateVariant = (index: number, field: string, value: any) => {
+    const newVariants = [...variants];
+    newVariants[index] = { ...newVariants[index], [field]: value };
+    setVariants(newVariants);
+  };
+const removeVariant = (index: number) => {
+    const newVariants = variants.filter((_, i) => i !== index);
+    setVariants(newVariants);
+  };
   useEffect(() => {
     async function loadCategories() {
       const res = await getCategories();
@@ -76,14 +88,17 @@ export default function NewProductPage() {
 
     try {
       const productData = {
-        ...formData,
-        price: Number(formData.price),
-        stock: Number(formData.stock),
-        // DB expects JSON string for images according to action definition
+        id: formData.id,
+        name: formData.name,
+        slug: formData.slug,
+        description: formData.description,
+        basePrice: formData.price,
+        category: formData.categoryId,
         images: JSON.stringify([imgUrl]),
+        stock: formData.stock
       };
 
-      const res = await createProduct(productData);
+      const res = await createProductWithVariants(productData, variants);
 
       if (res.success) {
         Swal.fire("Success!", "Produk berhasil ditambahkan.", "success").then(() => {
@@ -207,7 +222,62 @@ export default function NewProductPage() {
               </select>
             </div>
           </div>
-
+<div className="pt-6 mt-2 border-t border-gray-100">
+            <div className="flex items-center justify-between mb-4">
+              <label className="block text-sm font-bold text-gray-900">Product Variants <span className="text-gray-400 font-normal text-xs">(Opsional)</span></label>
+            </div>
+            
+            <div className="flex flex-col gap-6">
+              {variants.map((v, i) => (
+                <div key={i} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Warna {i + 1}</label>
+                    <input 
+                      placeholder="Contoh: Hitam" 
+                      className="w-full border border-gray-300 px-4 py-2.5 rounded-xl outline-none focus:border-black transition-colors" 
+                      value={v.color} 
+                      onChange={(e) => updateVariant(i, "color", e.target.value)} 
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => removeVariant(i)} 
+                      className="text-red-400 hover:text-red-600 p-1"
+                      title="Hapus Varian"
+                                      >
+                      <Trash2 size={16} />
+                      </button>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Storage {i + 1}</label>
+                    <input 
+                      placeholder="Contoh: 256GB" 
+                      className="w-full border border-gray-300 px-4 py-2.5 rounded-xl outline-none focus:border-black transition-colors" 
+                      value={v.storage} 
+                      onChange={(e) => updateVariant(i, "storage", e.target.value)} 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Harga Varian {i + 1} (Rp)</label>
+                    <input 
+                      type="number" required min="0" step="1000"
+                      placeholder="Contoh: 15000000" 
+                      className="w-full border border-gray-300 px-4 py-2.5 rounded-xl outline-none focus:border-black transition-colors" 
+                      value={v.price || ""} 
+                      onChange={(e) => updateVariant(i, "price", Number(e.target.value))} 
+                    />
+                  </div>
+                </div>
+              ))}
+              
+              <button 
+                type="button" 
+                onClick={addVariant} 
+                className="self-start text-[#ff6700] font-bold text-sm hover:underline"
+              >
+                + Tambah Varian Lain
+              </button>
+            </div>
+          </div>
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">Description</label>
             <textarea 

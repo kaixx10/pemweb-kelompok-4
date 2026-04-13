@@ -69,7 +69,7 @@ export default async function ProductsAdminPage() {
                         <p className="text-xs text-gray-500 mt-0.5">{product.slug}</p>
                       </td>
                       <td className="p-4 font-bold text-gray-800">
-                        Rp {Number(product.price).toLocaleString('id-ID')}
+                        Rp {Number(product.basePrice).toLocaleString('id-ID')}
                       </td>
                       <td className="p-4">
                         <span className={`inline-flex px-2 py-1 rounded-md text-xs font-bold ${product.stock > 10 ? 'bg-green-100 text-green-700' : product.stock > 0 ? 'bg-orange-100 text-orange-700' : 'bg-red-100 text-red-700'}`}>

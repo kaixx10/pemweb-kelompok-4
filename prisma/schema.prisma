@@ -43,20 +43,28 @@ model OrderItem {
 }
 
 model Product {
-  id          String      @id
+  id          String           @id @default(cuid())
   name        String
-  slug        String      @unique(map: "Product_slug_key")
-  description String      @db.Text
-  price       Decimal     @db.Decimal(15, 2)
-  stock       Int         @default(0)
-  images      String?     @db.LongText
-  categoryId  String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime
-  orderItems  OrderItem[]
-  category    Category    @relation(fields: [categoryId], references: [id], map: "Product_categoryId_fkey")
+  description String           @db.Text
+  basePrice   Decimal          @db.Decimal(10, 2)
+  stock       Int              @default(0)
+  images      String?          @db.Text
+  categoryId  String           
+  category    Category         @relation(fields: [categoryId], references: [id])
+  orderItems  OrderItem[]      
+  slug        String           @unique
+  variants    ProductVariant[] 
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
 
-  @@index([categoryId], map: "Product_categoryId_fkey")
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  color     String  // Contoh: Black
+  storage   String  // Contoh: 256GB
+  price     Decimal // Harga khusus varian ini
 }
 
 enum OrderStatus {
