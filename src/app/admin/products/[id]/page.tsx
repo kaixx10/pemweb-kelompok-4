@@ -59,15 +59,17 @@ export default function EditProductPage() {
             name: p.name,
             slug: p.slug,
             description: p.description,
-            price: p.price || 0,          // <-- Ubah di sini (sebelumnya p.basePrice)
+            price: p.basePrice || 0,          // <-- Ubah di sini (sebelumnya p.basePrice)
             stock: p.stock || 0,
             categoryId: p.categoryId || "", // <-- Ubah di sini (sebelumnya p.category)
           });
 
           // Set Gambar
           try {
-            const imgs = JSON.parse(p.images);
-            if (imgs && imgs.length > 0) setImgUrl(imgs[0]);
+            if (p.images) {
+              const imgs = JSON.parse(p.images);
+              if (imgs && imgs.length > 0) setImgUrl(imgs[0]);
+            }
           } catch (e) {
             if (p.images) setImgUrl(p.images);
           }

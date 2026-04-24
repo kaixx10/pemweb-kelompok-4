@@ -48,7 +48,7 @@ export async function createProduct(data: ProductInput) {
         name: data.name,
         slug: data.slug,
         description: data.description,
-        price: data.price, // Prisma will handle Number to Decimal conversion
+        basePrice: data.price, // Prisma will handle Number to Decimal conversion
         stock: data.stock,
         images: data.images,
         categoryId: data.categoryId,
@@ -176,7 +176,7 @@ export async function getProduct(id: string) {
     if (!product) throw new Error("Produk tidak ditemukan");
     const safeProduct = {
       ...product,
-      price: Number(product.price)
+      basePrice: Number(product.basePrice)
     };
     return { success: true, data: safeProduct };
   } catch (error: any) {

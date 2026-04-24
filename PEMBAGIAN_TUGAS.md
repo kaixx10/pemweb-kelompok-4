@@ -45,10 +45,10 @@ Fokus tahap ini adalah mengolah produk tunggal dan memfungsikan fitur pencarian 
 
 | Status | Anggota | Tugas Spesifik (Job Desk) | Output yang Diharapkan |
 | :---: | :---: | :--- | :--- |
-| ⏳ *BELUM*  | **A** | Database Keranjang & Sinkronisasi | Mengecek apakah *cart Zustand* saat *log in* bisa tersinkron ke tabel *Cart* di database secara permanen. |
-| ⏳ *BELUM*  | **B** | Halaman Alamat & Review Order | Membuat UI form pengisian alamat pengiriman dan Ringkasan Total Harga Netto di tahap Checkout. |
-| ⏳ *BELUM*  | **C** | Struktur Transaksi (Backend) | Menulis logika saat "Klik Pesan" mencetak struk di tabel *Orders* & mengosongkan keranjang si User. |
-| ⏳ *BELUM*  | **D** | Lacak Pesanan (Halaman User) | Membuat halaman "Pesanan Saya" untuk pembeli, agar pembeli bisa melihat status barang (Diproses/Dikirim). |
+| ✅ **SELESAI** | **A** | Database Keranjang & Sinkronisasi | Mengecek apakah *cart Zustand* saat *log in* bisa tersinkron ke tabel *Cart* di database secara permanen. |
+| ✅ **SELESAI** | **B** | Halaman Alamat & Review Order | Membuat UI form pengisian alamat pengiriman dan Ringkasan Total Harga Netto di tahap Checkout. |
+| ✅ **SELESAI** | **C** | Struktur Transaksi (Backend) | Menulis logika saat "Klik Pesan" mencetak struk di tabel *Orders* & mengosongkan keranjang si User. |
+| ✅ **SELESAI** | **D** | Lacak Pesanan (Halaman User) | Membuat halaman "Pesanan Saya" untuk pembeli, agar pembeli bisa melihat status barang (Diproses/Dikirim). |
 | ✅ **SELESAI** | **E** | Manajemen Order (Halaman Admin) | Halaman dasbor khusus si Bos Toko untuk melihat pesanan masuk & menekan tombol "Resi Dikirim". |
 
 ### Part 4: Integrasi Pembayaran nyata & Polishing (Finalisasi)

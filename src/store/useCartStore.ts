@@ -12,12 +12,16 @@ import {
 
 export interface CartStore {
   items: CartItem[];
-  addToCart: (product: Omit<CartItem, 'quantity'>) => void;
+  addToCart: (product: Omit<CartItem, 'quantity' | 'selected'>) => void;
   removeFromCart: (itemId: number) => void;
   updateCartQuantity: (itemId: number, quantity: number) => void;
+  toggleItemSelect: (itemId: number) => void;
+  toggleAllSelect: (selected: boolean) => void;
+  removeSelectedItems: () => void;
   emptyCart: () => void;
   getTotalPrice: () => number;
   getTotalItems: () => number;
+  getSelectedItemsCount: () => number;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -40,6 +44,23 @@ export const useCartStore = create<CartStore>()(
           items: updateQuantity(state.items, itemId, quantity),
         })),
 
+      toggleItemSelect: (itemId) =>
+        set((state) => ({
+          items: state.items.map((item) => 
+            item.id === itemId ? { ...item, selected: item.selected === false ? true : false } : item
+          ),
+        })),
+
+      toggleAllSelect: (selected) =>
+        set((state) => ({
+          items: state.items.map((item) => ({ ...item, selected })),
+        })),
+
+      removeSelectedItems: () => 
+        set((state) => ({
+          items: state.items.filter((item) => item.selected === false),
+        })),
+
       emptyCart: () =>
         set(() => ({
           items: clearCart(),
@@ -47,7 +68,7 @@ export const useCartStore = create<CartStore>()(
 
       getTotalPrice: () => {
         const { items } = get();
-        return items.reduce((total, item) => {
+        return items.filter(item => item.selected !== false).reduce((total, item) => {
           let price = 0;
           
           // 1. Jika harga sudah berupa Angka mentah (Number), langsung gunakan
@@ -68,7 +89,12 @@ export const useCartStore = create<CartStore>()(
 
       getTotalItems: () => {
         const { items } = get();
-        return items.reduce((total, item) => total + item.quantity, 0);
+        return items.filter(item => item.selected !== false).reduce((total, item) => total + item.quantity, 0);
+      },
+
+      getSelectedItemsCount: () => {
+        const { items } = get();
+        return items.filter(item => item.selected !== false).length;
       },
     }),
     {

@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useCartStore } from "@/store/useCartStore";
 import { ShoppingCart } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -216,8 +218,8 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
       <div className="w-24 h-24 md:w-32 md:h-32 mb-6 mt-4 flex items-center justify-center text-6xl md:text-7xl group-hover:scale-110 transition-transform duration-500 drop-shadow-lg flex-shrink-0 relative">
         {product.img && (product.img.startsWith('http') || product.img.startsWith('/')) ? (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={product.img} alt={product.name} className="w-full h-full object-contain drop-shadow-md" />
+            {/* Image Next.js */}
+            <Image src={product.img} alt={product.name} fill sizes="(max-width: 768px) 96px, 128px" className="object-contain drop-shadow-md" />
           </>
         ) : (
           product.img
@@ -323,11 +325,11 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
             </button>
 
             <div className="w-full md:w-1/2 bg-gray-50 flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-gray-100 relative">
-               <div className="w-48 h-48 md:w-80 md:h-80 flex items-center justify-center text-[100px] md:text-[150px] drop-shadow-xl hover:scale-105 transition-transform duration-500">
+               <div className="w-48 h-48 md:w-80 md:h-80 flex items-center justify-center text-[100px] md:text-[150px] drop-shadow-xl hover:scale-105 transition-transform duration-500 relative">
                  {selectedProduct.img && (selectedProduct.img.startsWith('http') || selectedProduct.img.startsWith('/')) ? (
                     <>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={selectedProduct.img} alt={selectedProduct.name} className="w-full h-full object-contain" />
+                      {/* Image Next.js */}
+                      <Image src={selectedProduct.img} alt={selectedProduct.name} fill sizes="(max-width: 768px) 192px, 320px" className="object-contain" />
                     </>
                  ) : (
                     selectedProduct.img

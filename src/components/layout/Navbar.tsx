@@ -248,11 +248,7 @@ export default function Navbar() {
                 className="flex items-center gap-2 text-gray-600 hover:text-[#ff6700] transition-colors"
                 title="Profil Saya"
               >
-                {session?.user?.image ? (
-                  <img src={session.user.image} className="w-6 h-6 rounded-full object-cover" alt="Profile"/>
-                ) : (
-                  <User size={20} strokeWidth={2} />
-                )}
+                <User size={20} strokeWidth={2} />
               </button>
 
               {/* Panel Dropdown - Hanya tampil kalau sudah login & open */}
@@ -269,8 +265,8 @@ export default function Navbar() {
                      <Link href="/profile" onClick={() => setIsProfileDropdownOpen(false)} className="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-orange-50 hover:text-[#ff6700] transition-colors w-full text-left flex items-center gap-2">
                         Akun Saya
                      </Link>
-                     <Link href="/profile#orders" onClick={() => setIsProfileDropdownOpen(false)} className="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-orange-50 hover:text-[#ff6700] transition-colors w-full text-left flex justify-between items-center">
-                        Pesanan <span className="w-4 h-4 rounded-full bg-[#ff6700] text-white text-[9px] flex items-center justify-center">?</span>
+                     <Link href="/profile/orders" onClick={() => setIsProfileDropdownOpen(false)} className="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-orange-50 hover:text-[#ff6700] transition-colors w-full text-left flex justify-between items-center">
+                        Pesanan {totalItems > 0 && <span className="w-4 h-4 rounded-full bg-[#ff6700] text-white text-[9px] flex items-center justify-center">{totalItems}</span>}
                      </Link>
                    </div>
 
@@ -280,6 +276,7 @@ export default function Navbar() {
                      <button 
                        onClick={async () => {
                          setIsProfileDropdownOpen(false);
+                         useCartStore.getState().emptyCart();
                          await signOut({ redirect: false });
                          router.push('/');
                        }} 
