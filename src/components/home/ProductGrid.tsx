@@ -23,16 +23,17 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
   const [selectedVariant, setSelectedVariant] = useState<any | null>(null);
   
   const [mounted, setMounted] = useState(false);
-
   const { addToCart } = useCartStore();
   const { data: session } = useSession();
   const { openModal } = useAuthModalStore();
+  const [activeTab, setActiveTab] = useState("Phone"); 
+  const categories = ["Phone", "Tablets", "TVs & HA", "Tools"];
 
   useEffect(() => {
     setMounted(true);
   }, []);
   
-  const { sortOrder } = useFilterStore();
+  const { searchQuery, sortOrder } = useFilterStore();;
   const searchParams = useSearchParams();
   const viewProductId = searchParams.get('view_product');
 
@@ -58,16 +59,16 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
     return {
       id: p.id,
       name: p.name,
-      price: formatIDR(p.basePrice || p.price), // Harga untuk Tampilan (Rp)
-      basePrice: Number(p.basePrice || p.price), // Harga Angka Mentah untuk Keranjang
-      rawPrice: Number(p.basePrice || p.price), // Harga Angka Mentah untuk Sort
+      price: formatIDR(p.price), 
+      basePrice: p.basePrice || p.price, 
+      rawPrice: Number(p.price), 
       img: emoji,
       desc: p.description,
       featured: p.slug?.includes('ultra'),
-      variants: p.variants || [], // Menyimpan data varian!
+      categoryName: p.categoryName || "",
+      variants: p.variants || []
     };
   });
-
   // Fungsi untuk membuka Modal & otomatis memilih varian pertama (jika ada)
   const openProductModal = (product: any) => {
     setSelectedProduct(product);
@@ -86,19 +87,40 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
   }, [viewProductId]); // (Menghapus 'products' dari dependency agar tidak error looping)
 
   // ==========================================
-  // ALGORITMA SORT 
+  // ALGORITMA FILTERING (Referensi Kategori Admin)
   // ==========================================
   let displayedProducts = [...products];
 
+  // 1. Filter Kategori (Mencocokkan Tab dengan Kategori Database Admin)
+  displayedProducts = displayedProducts.filter(p => {
+    const tabLabel = activeTab.toLowerCase();
+    const dbCategory = p.categoryName ? p.categoryName.toLowerCase() : "";
+
+    if (!dbCategory) return false; 
+
+    if (activeTab === "TVs & HA") {
+      return dbCategory.includes("tv") || dbCategory.includes("home") || dbCategory.includes("ha");
+    }
+    
+    return dbCategory.includes(tabLabel.split(' ')[0]) || tabLabel.includes(dbCategory);
+  });
+  // 2. Filter Pencarian (Search Box)
+  if (searchQuery) {
+    displayedProducts = displayedProducts.filter(p =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.desc.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
+
+  // 3. Algoritma Pengurutan (Sorting)
   if (sortOrder === "asc") {
     displayedProducts.sort((a, b) => a.rawPrice - b.rawPrice);
   } else if (sortOrder === "desc") {
-    displayedProducts.sort((a, b) => b.rawPrice - a.rawPrice);
+    displayedProducts.sort((a, b) => b.rawPrice - a.rawPrice); 
   }
 
-  const isFiltering = sortOrder !== "none";
+  const isFiltering = sortOrder !== "none" || searchQuery !== "" || activeTab !== "Phone";
   // ==========================================
-
   const handleAddToCart = (product: any, e?: React.MouseEvent) => {
     if (e) {
       e.stopPropagation();
@@ -242,11 +264,27 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
   return (
     <section className="w-full bg-transparent py-8 pb-16">
       <div className="max-w-[1440px] mx-auto px-6 lg:px-10">
-        <div className="flex justify-between items-end pb-3 mb-6">
-          <div className="flex items-center gap-4">
-             <h2 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
-               {isFiltering ? "Hasil Pencarian 🔍" : "Pilihan Harian"} <span className={isFiltering ? "hidden" : "text-yellow-500"}>⚡</span>
-             </h2>
+        {/* Header Category - Posisikan ke Tengah */}
+        <div className="flex flex-col items-center mb-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-6">
+            Category Product
+          </h2>
+          
+          {/* Tab Kategori - Rata Tengah */}
+          <div className="flex items-center justify-center gap-6 md:gap-12 overflow-x-auto pb-4 w-full scrollbar-hide">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveTab(cat)}
+                className={`text-sm md:text-lg font-semibold transition-all duration-300 relative pb-2 whitespace-nowrap ${
+                  activeTab === cat 
+                  ? "text-[#ff6700] after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-[#ff6700]" 
+                  : "text-gray-400 hover:text-black"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
   
@@ -264,29 +302,29 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
            ) : (
              <>
                {products.length > 0 && (
-                 <div onClick={() => openProductModal(products[0])} className="w-full bg-white rounded-[2rem] flex flex-col md:flex-row overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 border border-gray-100">
-                    <div className="w-full md:w-1/2 bg-[#1a1a1a] p-8 md:p-12 flex items-center justify-center relative overflow-hidden group min-h-[300px] md:min-h-0">
-                        <div className="relative w-[70%] aspect-[2.2/1] bg-gradient-to-br from-[#2a2a2a] to-black border border-gray-700/50 rounded-2xl md:rounded-[2rem] shadow-2xl flex items-center justify-center -rotate-6 group-hover:-rotate-3 transition-transform duration-500 z-10 before:absolute before:inset-0 before:bg-gradient-to-t before:from-white/5 before:to-transparent before:rounded-2xl md:before:rounded-[2rem]">
-                            <div className="text-white text-[10px] sm:text-xs font-bold font-sans tracking-widest absolute left-8 top-1/2 -translate-y-1/2 opacity-60">NEO</div>
-                            <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 md:gap-4 p-2 bg-[#111] rounded-3xl border border-white/5 shadow-inner">
-                               <div className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-gray-600 bg-black flex items-center justify-center shadow-[inset_0_2px_10px_rgba(255,255,255,0.1)]"><div className="w-3 h-3 md:w-5 md:h-5 rounded-full bg-blue-900/40"></div></div>
-                               <div className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-gray-600 bg-black flex items-center justify-center shadow-[inset_0_2px_10px_rgba(255,255,255,0.1)]"><div className="w-3 h-3 md:w-5 md:h-5 rounded-full bg-blue-900/40"></div></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="w-full md:w-1/2 bg-white flex flex-col justify-center p-8 md:p-14">
-                        <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2 md:mb-3">
-                           <h3 className="text-gray-900 hover:text-[#ff6700] transition-colors cursor-pointer text-2xl md:text-[32px] font-bold leading-none tracking-tight">{products[0].name}</h3>
-                           <span className="text-xs text-gray-700 border border-gray-300 rounded-full px-3 py-1 bg-white font-medium">Bestseller</span>
-                        </div>
-                        <p className="text-gray-500 text-sm md:text-[15px] mb-4 md:mb-6 leading-relaxed">{products[0].desc}</p>
-                        
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-end justify-between mt-auto gap-2 sm:gap-3">
-                           <div>
-                             <div className="flex items-baseline gap-2 mb-2">
-                               <span className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">{products[0].price}</span>
+                 <div onClick={() => openProductModal(displayedProducts[0])} className="w-full bg-white rounded-[2rem] flex flex-col md:flex-row overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                      <div className="w-full md:w-1/2 bg-[#1a1a1a] p-8 md:p-12 flex items-center justify-center relative overflow-hidden group min-h-[300px] md:min-h-0">
+                          <div className="relative w-[70%] aspect-[2.2/1] bg-gradient-to-br from-[#2a2a2a] to-black border border-gray-700/50 rounded-2xl md:rounded-[2rem] shadow-2xl flex items-center justify-center -rotate-6 group-hover:-rotate-3 transition-transform duration-500 z-10 before:absolute before:inset-0 before:bg-gradient-to-t before:from-white/5 before:to-transparent before:rounded-2xl md:before:rounded-[2rem]">
+                              <div className="text-white text-[10px] sm:text-xs font-bold font-sans tracking-widest absolute left-8 top-1/2 -translate-y-1/2 opacity-60">NEO</div>
+                              <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 md:gap-4 p-2 bg-[#111] rounded-3xl border border-white/5 shadow-inner">
+                                 <div className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-gray-600 bg-black flex items-center justify-center shadow-[inset_0_2px_10px_rgba(255,255,255,0.1)]"><div className="w-3 h-3 md:w-5 md:h-5 rounded-full bg-blue-900/40"></div></div>
+                                 <div className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-gray-600 bg-black flex items-center justify-center shadow-[inset_0_2px_10px_rgba(255,255,255,0.1)]"><div className="w-3 h-3 md:w-5 md:h-5 rounded-full bg-blue-900/40"></div></div>
+                              </div>
+                          </div>
+                      </div>
+                      <div className="w-full md:w-1/2 bg-white flex flex-col justify-center p-8 md:p-14">
+                          <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                             <h3 className="text-gray-900 hover:text-[#ff6700] transition-colors cursor-pointer text-2xl md:text-[32px] font-bold leading-none tracking-tight">{displayedProducts[0].name}</h3>
+                             <span className="text-xs text-gray-700 border border-gray-300 rounded-full px-3 py-1 bg-white font-medium">Kategori: {displayedProducts[0].categoryName}</span>
+                          </div>
+                          <p className="text-gray-500 text-sm md:text-[15px] mb-4 md:mb-6 leading-relaxed">{displayedProducts[0].desc}</p>
+                          <div className="flex flex-col sm:flex-row items-stretch sm:items-end justify-between mt-auto gap-2 sm:gap-3">
+                             <div className="w-full">
+                               
+                               <div className="flex items-baseline gap-2 mb-2">
+                                 <span className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">{displayedProducts[0].price}</span>
+                               </div>
                              </div>
-                           </div>
                            <div className="flex gap-2 w-full sm:w-auto">
                               <button onClick={(e) => handleAddToCart(products[0], e)} className="flex-1 sm:flex-none bg-black text-white px-3 py-2.5 md:px-4 md:py-3 rounded-lg md:rounded-[14px] font-bold text-sm md:text-[15px] hover:bg-black/90 shadow-lg shadow-gray-500/20 transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
                                 <ShoppingCart size={16} strokeWidth={2} />
@@ -302,7 +340,7 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
                )}
 
                 <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-2">
-                   {products.filter(p => !p.featured).slice(0, 4).map(renderProductCard)}
+                   {displayedProducts.filter(p => !p.featured).slice(1, 5).map(renderProductCard)}
                 </div>
              </>
            )}
