@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '**',
       },
+    {
+        protocol: 'https',
+        hostname: 'i02.appmifile.com',
+        port: '',
+        pathname: '**',
+      },
     ],
   },
 };

@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer";
 import Providers from "@/components/Providers";
 import AuthModal from "@/components/auth/AuthModal";
 import CartSync from "@/components/CartSync";
+import XiaomiSupport from "@/components/layout/XiaomiSupport";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -34,17 +35,18 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${jakarta.variable} h-full antialiased`}
+      className={`${jakarta.variable} h-full antialiased scroll-smooth`} 
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col font-sans">
-        {/* Bungkus seluruh aplikasi dengan Providers */}
         <Providers>
           <CartSync />
           <Navbar />
           <AuthModal />
-          {/* Children adalah isi halaman web kita (seperti Hero, ProductGrid, dll) */}
+          
           <main className="flex-grow">{children}</main>
+          
+          <XiaomiSupport />
           <Footer />
         </Providers>
       </body>
