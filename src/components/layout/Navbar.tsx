@@ -167,7 +167,7 @@ export default function Navbar() {
         {/* Right Nav Options */}
         <div className="flex items-center gap-6 ml-auto z-[60] mr-2 lg:mr-4" onMouseEnter={() => handleMouseEnter('none')}>
 <span className="text-[13px] font-medium text-gray-600 hover:text-[#ff6700] transition-colors cursor-pointer hidden md:block">Discover</span>
-<span className="text-[13px] font-medium text-gray-600 hover:text-[#ff6700] transition-colors cursor-pointer hidden md:block">Support</span>
+<Link href="/#support" className="text-sm font-medium text-gray-700 hover:text-[#ff6700] transition-colors">Support</Link>
 <span className="text-[13px] font-medium text-gray-600 hover:text-[#ff6700] transition-colors cursor-pointer mr-4 hidden xl:block">Community</span>
            
           <div className="flex items-center gap-5 border-l border-gray-200 pl-6">
