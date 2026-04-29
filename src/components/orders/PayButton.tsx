@@ -17,8 +17,8 @@ export default function PayButton({ snapToken, orderId }: { snapToken: string | 
     if (typeof (window as any).snap !== "undefined") {
       (window as any).snap.pay(snapToken, {
         onSuccess: async function () {
-          await syncOrderWithMidtrans(orderId);
-          Swal.fire("Berhasil!", "Pembayaran diterima, pesanan diproses.", "success").then(() => {
+          await syncOrderWithMidtrans(orderId, true);
+          Swal.fire("Berhasil!", "Pembayaran diterima, pesanan selesai.", "success").then(() => {
             router.refresh();
           });
         },
@@ -32,12 +32,23 @@ export default function PayButton({ snapToken, orderId }: { snapToken: string | 
           Swal.fire("Gagal", "Transaksi ditolak pembayaran.", "error");
         },
         onClose: async function () {
-          const sync = await syncOrderWithMidtrans(orderId);
-          if (sync.success && sync.status === "COMPLETED") {
-             Swal.fire("Berhasil", "Pembayaran Lunas terdeteksi di latar belakang!", "success").then(() => router.refresh());
-          } else {
-             Swal.fire("Peringatan", "Anda menutup pop-up sebelum selesai.", "warning");
-          }
+          Swal.fire({
+            title: "Batalkan Pesanan?",
+            text: "Anda menutup jendela pembayaran. Apakah Anda ingin membatalkan pesanan ini?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Ya, Batalkan",
+            cancelButtonText: "Tidak, Bayar Nanti"
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              await syncOrderWithMidtrans(orderId, false, true); // Cancel order
+              Swal.fire("Dibatalkan", "Pesanan Anda telah dibatalkan.", "info").then(() => {
+                router.refresh();
+              });
+            }
+          });
         }
       });
     } else {

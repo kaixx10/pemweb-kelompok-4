@@ -4,10 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { OrderStatus } from "@prisma/client";
 
-export async function syncOrderWithMidtrans(orderId: string, forceSuccess: boolean = false) {
+export async function syncOrderWithMidtrans(orderId: string, forceSuccess: boolean = false, cancel: boolean = false) {
   try {
-    // Apabila Midtrans Snap di frontend telah membuktikan lunas, 
-    // kita lewati validasi berlapis dan langsung paksa Prisma untuk mencatat "Lunas" (PROCESSING).
     if (forceSuccess) {
       await prisma.order.update({
         where: { id: orderId },
@@ -19,6 +17,19 @@ export async function syncOrderWithMidtrans(orderId: string, forceSuccess: boole
       revalidatePath("/profile/orders");
       revalidatePath("/admin/orders");
       return { success: true, status: "COMPLETED" };
+    }
+
+    if (cancel) {
+      await prisma.order.update({
+        where: { id: orderId },
+        data: {
+          status: OrderStatus.CANCELLED,
+          paymentStatus: "cancelled"
+        }
+      });
+      revalidatePath("/profile/orders");
+      revalidatePath("/admin/orders");
+      return { success: true, status: "CANCELLED" };
     }
 
     // Jika tidak dipaksa, anggap pending

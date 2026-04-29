@@ -38,8 +38,9 @@ model OrderItem {
   productId String
   quantity  Int
   price     Decimal @db.Decimal(15, 2)
-  order     Order   @relation(fields: [orderId], references: [id], map: "OrderItem_orderId_fkey")
-  product   Product @relation(fields: [productId], references: [id], map: "OrderItem_productId_fkey")
+  order     Order   @relation(fields: [orderId], references: [id], map: "OrderItem_orderId_fkey", onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], map: "OrderItem_productId_fkey", onDelete: Cascade)
+  review    Review?
 
   @@index([orderId], map: "OrderItem_orderId_fkey")
   @@index([productId], map: "OrderItem_productId_fkey")
@@ -82,6 +83,7 @@ model Product {
   cartItems   CartItem[]       // Relasi kebugaran CartItem
   slug        String           @unique
   variants    ProductVariant[] 
+  reviews     Review[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 }
@@ -149,6 +151,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   orders        Order[]
+  reviews       Review[]
   cart          Cart?     // Relasi murni: 1 User maksimal hanya punya 1 Cart aktif
 }
 
@@ -158,4 +161,19 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Review {
+  id          String    @id @default(cuid())
+  rating      Int
+  comment     String?   @db.Text
+  userId      String
+  productId   String
+  orderItemId String    @unique
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime  @default(now())
 }

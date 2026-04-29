@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
 import { useFilterStore } from "@/store/useFilterStore";
 import { createPortal } from "react-dom";
+import ProductReviews from "@/components/home/ProductReviews";
 
 interface ProductGridProps {
   initialProducts: any[];
@@ -172,7 +173,7 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
       img: product.img,
       desc: product.desc,
     });
-    router.push("/payment");
+    router.push("/checkout");
   };  
 
   const handleModalAddToCart = () => {
@@ -209,7 +210,7 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
       desc: selectedProduct.desc,
     });
     
-    router.push("/payment");
+    router.push("/checkout");
   };
 
   if (!products.length) {
@@ -419,9 +420,11 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
                     <div className="flex items-center gap-1.5"><span className="text-green-500">✔</span> Garansi Resmi 1 Tahun</div>
                     <div className="flex items-center gap-1.5"><span className="text-green-500">✔</span> Bebas Ongkir</div>
                  </div>
+                 
+                 <ProductReviews productId={selectedProduct.id} />
                </div>
 
-               <div className="mt-8 flex gap-3">
+               <div className="mt-8 flex gap-3 sticky bottom-0 bg-white pt-4 pb-2 z-10">
                  <button 
                    onClick={handleModalAddToCart} // Gunakan fungsi khusus Modal
                    className="flex-1 bg-white border-2 border-gray-900 text-gray-900 font-bold py-4 rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"

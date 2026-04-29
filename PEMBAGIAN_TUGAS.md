@@ -56,11 +56,11 @@ Tahap kelulusan situs, menghubungkan uang sungguhan/simulasi.
 
 | Status | Anggota | Tugas Spesifik (Job Desk) | Output yang Diharapkan |
 | :---: | :---: | :--- | :--- |
-| ⏳ *BELUM*  | **A** | Setup API Payment Gateway | Memasang modul Midtrans SNAP (Simulasi Kartu Kredit/GoPay/BCA Virtual Account). |
-| ⏳ *BELUM*  | **B** | Respon Webhook Midtrans | Membuat API penerima konfirmasi agar status *Order* otomatis berubah jadi "Lunas" bila Midtrans sukses ditekan pembeli. |
-| ⏳ *BELUM*  | **C** | Fitur Rating & Review | Membuat form ulasan bintang (1-5) jika status order sudah "Barang Diterima". |
-| ⏳ *BELUM*  | **D** | Optimalisasi Performa (SEO/Speed) | Mengatur struktur gambar pakai `<Image>` bawaan Next, mengecek responsivitas ukuran HP, menambah Metadata per-HP. |
-| ⏳ *BELUM*  | **E** | Penanggung Jawab Deployment | Memastikan kode proyek naik ke Vercel dengan *environment variables* yang benar dan database terhubung tanpa *error 500*. |
+| ✅ **SELESAI**  | **A** | Setup API Payment Gateway | Memasang modul Midtrans SNAP (Simulasi Kartu Kredit/GoPay/BCA Virtual Account). |
+| ✅ **SELESAI**  | **B** | Respon Webhook Midtrans | Membuat API penerima konfirmasi agar status *Order* otomatis berubah jadi "Lunas" bila Midtrans sukses ditekan pembeli. |
+| ✅ **SELESAI**  | **C** | Fitur Rating & Review | Membuat form ulasan bintang (1-5) jika status order sudah "Barang Diterima". |
+| ✅ **SELESAI**  | **D** | Optimalisasi Performa (SEO/Speed) | Mengatur struktur gambar pakai `<Image>` bawaan Next, mengecek responsivitas ukuran HP, menambah Metadata per-HP. |
+| ✅ **SELESAI**  | **E** | Penanggung Jawab Deployment | Memastikan kode proyek naik ke Vercel dengan *environment variables* yang benar dan database terhubung tanpa *error 500*. |
 
 > [!TIP]
 > **Kenapa dibagi begini?** Karena di dunia kerja nyata (sistem *Agile*), setiap orang berhak menyentuh *Frontend* maupun *Backend*. Memecah pekerjaan berdasarkan alur logika aplikasi (*Sprint*) akan melatih kelima anggota kelompok (A,B,C,D,E) untuk bisa membangun pondasi *full-stack* secara rata, alih-alih mengeksploitasi 1 orang hanya mengurus CSS.

@@ -116,12 +116,10 @@ export default function Navbar() {
       {/* Main Navbar */}
       <div className="max-w-[1440px] mx-auto px-6 lg:px-10 h-[60px] flex items-center relative bg-white z-50">
         
-        {/* LOGO - Optically adjusted to compensate for the 32px rounded corners of Neo grid below */}
+        {/* LOGO - Menggunakan favicon MI */}
         <Link href="/" className="flex-shrink-0 ml-1 lg:ml-2.5 mr-6 lg:mr-10 z-[60]">
-          <div className="w-[44px] h-[44px] bg-[#ff6700] flex items-center justify-center rounded-[12px] cursor-pointer hover:opacity-90 transition p-2.5 shadow-sm">
-             <svg viewBox="0 0 24 24" fill="white" className="w-full h-full">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM10.8 17h-2v-5.2H7.2V17h-2V7h3.6v3.2h2V7h2v10zm6 0h-2V7h2v10z"/>
-             </svg>
+          <div className="w-[44px] h-[44px] flex items-center justify-center cursor-pointer hover:opacity-90 transition shadow-sm rounded-[12px] overflow-hidden">
+             <img src="/favicon.ico" alt="Xiaomi Logo" className="w-full h-full object-cover" />
           </div>
         </Link>
 
@@ -164,13 +162,32 @@ export default function Navbar() {
             </li>
         </ul>
 
-        {/* Right Nav Options */}
-        <div className="flex items-center gap-6 ml-auto z-[60] mr-2 lg:mr-4" onMouseEnter={() => handleMouseEnter('none')}>
-<span className="text-[13px] font-medium text-gray-600 hover:text-[#ff6700] transition-colors cursor-pointer hidden md:block">Discover</span>
-<Link href="/#support" className="text-sm font-medium text-gray-700 hover:text-[#ff6700] transition-colors">Support</Link>
-<span className="text-[13px] font-medium text-gray-600 hover:text-[#ff6700] transition-colors cursor-pointer mr-4 hidden xl:block">Community</span>
+        {/* Right Section Wrapper */}
+        <div className="flex items-center h-full ml-auto z-[60]" onMouseEnter={() => handleMouseEnter('none')}>
+          {/* Secondary Links (Discover, Support, Community) */}
+          <ul className="hidden lg:flex items-center h-full mr-2 z-[60]">
+            <li className="h-full flex items-center group">
+              <span className="text-[13px] font-medium cursor-pointer px-3 xl:px-4 relative flex items-center h-full pt-[2px] transition-colors group-hover:text-[#ff6700] text-gray-800">
+                Discover
+                <span className="absolute bottom-0 left-3 xl:left-4 right-3 xl:right-4 h-[2px] transition-colors bg-transparent group-hover:bg-[#ff6700]"></span>
+              </span>
+            </li>
+            <li className="h-full flex items-center group">
+              <Link href="/#support" className="text-[13px] font-medium cursor-pointer px-3 xl:px-4 relative flex items-center h-full pt-[2px] transition-colors group-hover:text-[#ff6700] text-gray-800">
+                Support
+                <span className="absolute bottom-0 left-3 xl:left-4 right-3 xl:right-4 h-[2px] transition-colors bg-transparent group-hover:bg-[#ff6700]"></span>
+              </Link>
+            </li>
+            <li className="h-full flex items-center group">
+              <span className="text-[13px] font-medium cursor-pointer px-3 xl:px-4 relative flex items-center h-full pt-[2px] transition-colors group-hover:text-[#ff6700] text-gray-800">
+                Community
+                <span className="absolute bottom-0 left-3 xl:left-4 right-3 xl:right-4 h-[2px] transition-colors bg-transparent group-hover:bg-[#ff6700]"></span>
+              </span>
+            </li>
+        </ul>
            
-          <div className="flex items-center gap-5 border-l border-gray-200 pl-6">
+        {/* Right Nav Options (Search, Cart, Profile) */}
+        <div className="flex items-center gap-5 border-l border-gray-200 pl-4 h-full z-[60]">
             <button className="text-gray-600 hover:text-[#ff6700] transition-colors relative">
             {/* 1. Fitur Search (Mirip Xiaomi) */}
         <div className="flex items-center gap-1.5 md:gap-3 mr-2 md:mr-4 relative">

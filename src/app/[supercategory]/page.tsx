@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import ProductGrid from "@/components/home/ProductGrid";
+import CategoryGrid from "@/components/category/CategoryGrid";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -65,7 +65,7 @@ export default async function SuperCategoryPage({ params }: { params: Promise<{ 
     <main className="min-h-screen bg-[var(--background)] flex flex-col font-sans">
       {/* ... (kode banner kategori) ... */}
       <div className="flex-1 w-full relative pb-16 mt-8">
-        <ProductGrid initialProducts={safeProducts} />
+        <CategoryGrid initialProducts={safeProducts} />
       </div>
     </main>
   );

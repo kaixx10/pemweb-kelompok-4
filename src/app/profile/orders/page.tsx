@@ -4,6 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import PayButton from "@/components/orders/PayButton";
+import ReviewButton from "@/components/orders/ReviewButton";
 import Link from "next/link";
 import { PackageSearch, ShoppingBag, Clock, CheckCircle2, Truck } from "lucide-react";
 
@@ -20,7 +21,7 @@ export default async function UserOrdersPage() {
     where: { userId },
     include: {
       orderItems: {
-        include: { product: true }
+        include: { product: true, review: true }
       }
     },
     orderBy: { createdAt: "desc" }
@@ -114,6 +115,14 @@ export default async function UserOrdersPage() {
                              <div className="flex-1 min-w-0">
                                <h4 className="text-sm font-bold text-gray-900 truncate">{item.product.name}</h4>
                                <p className="text-xs text-gray-500 mt-1">{item.quantity} barang x {formatIDR(item.price)}</p>
+                               {order.status === "COMPLETED" && (
+                                 <ReviewButton 
+                                    orderItemId={item.id} 
+                                    productId={item.productId} 
+                                    productName={item.product.name} 
+                                    hasReviewed={!!(item as any).review} 
+                                 />
+                               )}
                              </div>
                              <div className="text-right">
                                <p className="text-sm font-bold text-gray-900">{formatIDR(Number(item.price) * item.quantity)}</p>
