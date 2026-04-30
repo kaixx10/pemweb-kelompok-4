@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import EditProfileModal from "@/components/profile/EditProfileModal";
 import { Calendar, Heart, MapPin, Package, Settings, Star, Shield, Bell } from "lucide-react";
+import Link from "next/link";
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
@@ -78,55 +79,55 @@ export default async function ProfilePage() {
              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                 Pusat Pelanggan
              </h2>
-             <button className="text-sm font-semibold text-gray-500 hover:text-[#ff6700] transition-colors">
+             <Link href="/profile/settings" className="text-sm font-semibold text-gray-500 hover:text-[#ff6700] transition-colors">
                 Pengaturan ID &gt;
-             </button>
+             </Link>
           </div>
 
           {/* GRID MENU STATIS */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y md:divide-y-0 lg:divide-x divide-gray-100 bg-white">
              
              {/* KARTU 1: Pesanan */}
-             <div className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group">
+             <Link href="/profile/orders" className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group relative">
                 <Package size={40} strokeWidth={1.5} className="text-gray-400 group-hover:text-[#ff6700] group-hover:-translate-y-1 transition-all mb-4" />
                 <h3 className="font-bold text-gray-900 mb-2">Pesanan Saya</h3>
                 <p className="text-xs text-gray-500">Lacak, ubah, batalkan pesanan, pengembalian atau ulasan barang belanjaanmu.</p>
-             </div>
+             </Link>
 
              {/* KARTU 2: Ulasan */}
-             <div className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group lg:border-r border-gray-100">
+             <Link href="/profile/reviews" className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group lg:border-r border-gray-100 relative">
                 <Star size={40} strokeWidth={1.5} className="text-gray-400 group-hover:text-[#ff6700] group-hover:-translate-y-1 transition-all mb-4" />
                 <h3 className="font-bold text-gray-900 mb-2">Ulasan Saya</h3>
-                <p className="text-xs text-gray-500">Sampaikan pendapat Anda tentang fitur produk atau pengalaman pelayanan.</p>
-             </div>
+                <p className="text-xs text-gray-500">Lihat semua penilaian dan ulasan yang pernah Anda berikan pada produk.</p>
+             </Link>
 
              {/* KARTU 3: Manfaat Eksklusif */}
-             <div className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group">
+             <Link href="/profile/benefits" className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group relative">
                 <Heart size={40} strokeWidth={1.5} className="text-gray-400 group-hover:text-[#ff6700] group-hover:-translate-y-1 transition-all mb-4" />
                 <h3 className="font-bold text-gray-900 mb-2">Manfaat Eksklusif</h3>
                 <p className="text-xs text-gray-500">Klaim jaminan garansi 24 bulan dan akses prioritas pembelian untuk Neo Lovers.</p>
-             </div>
+             </Link>
 
              {/* KARTU 4: Alamat */}
-             <div className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group lg:border-t border-gray-100">
+             <Link href="/profile/address" className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group lg:border-t border-gray-100">
                 <MapPin size={40} strokeWidth={1.5} className="text-gray-400 group-hover:text-[#ff6700] group-hover:-translate-y-1 transition-all mb-4" />
                 <h3 className="font-bold text-gray-900 mb-2">Daftar Alamat</h3>
                 <p className="text-xs text-gray-500">Kelola rute pengiriman paket ke berbagai tujuan ekspedisi di Nusantara.</p>
-             </div>
+             </Link>
 
              {/* KARTU 5: Notifikasi */}
-             <div className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group lg:border-t lg:border-r border-gray-100">
+             <Link href="/profile/notifications" className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group lg:border-t lg:border-r border-gray-100 relative">
                 <Bell size={40} strokeWidth={1.5} className="text-gray-400 group-hover:text-[#ff6700] group-hover:-translate-y-1 transition-all mb-4" />
                 <h3 className="font-bold text-gray-900 mb-2">Preferensi Notifikasi</h3>
                 <p className="text-xs text-gray-500">Sesuaikan email promo peluncuran produk dan notifikasi pelacakan kargo.</p>
-             </div>
+             </Link>
 
              {/* KARTU 6: Akun Detail */}
-             <div className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group lg:border-t border-gray-100">
+             <Link href="/profile/settings" className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group lg:border-t border-gray-100 relative">
                 <Settings size={40} strokeWidth={1.5} className="text-gray-400 group-hover:text-[#ff6700] group-hover:-translate-y-1 transition-all mb-4" />
                 <h3 className="font-bold text-gray-900 mb-2">Preferensi Akun</h3>
                 <p className="text-xs text-gray-500">Perkuat keamanan perangkat, hubungkan perangkat satelit, dan kunci otentikasi.</p>
-             </div>
+             </Link>
 
           </div>
         </div>

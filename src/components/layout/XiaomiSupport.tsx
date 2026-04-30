@@ -1,6 +1,8 @@
 "use client";
 
 import { Headphones, Mail, MapPin, MessageSquare } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 export default function XiaomiSupport() {
   const supportItems = [
@@ -16,8 +18,8 @@ export default function XiaomiSupport() {
     },
     {
       icon: <MapPin size={32} strokeWidth={1.5} />,
-      title: "Lokasi Layanan",
-      desc: "Temukan Service Center",
+      title: "Alamat",
+      desc: "Atur Buku Alamat Anda",
     },
     {
       icon: <MessageSquare size={32} strokeWidth={1.5} />,
@@ -25,6 +27,23 @@ export default function XiaomiSupport() {
       desc: "Chat langsung dengan kami",
     },
   ];
+
+  const router = useRouter();
+
+  const handleSupportClick = (title: string) => {
+    if (title === "Hubungi Kami") {
+      router.push("/support?action=email");
+    } else if (title === "Alamat") {
+      router.push("/profile/address");
+    } else {
+      Swal.fire({
+        icon: "info",
+        title: "Segera Hadir",
+        text: `Fitur ${title} sedang dalam tahap pengembangan!`,
+        confirmButtonColor: "#ff6700"
+      });
+    }
+  };
 
   return (
     // bg-transparent agar warnanya sama dengan background abu-abu muda website Anda
@@ -41,6 +60,7 @@ export default function XiaomiSupport() {
           {supportItems.map((item, index) => (
             <div 
               key={index} 
+              onClick={() => handleSupportClick(item.title)}
               className="flex flex-col items-center text-center group cursor-pointer"
             >
               <div className="text-gray-400 group-hover:text-[#ff6700] transition-all duration-300 mb-4 transform group-hover:scale-110">

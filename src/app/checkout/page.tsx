@@ -8,6 +8,7 @@ import { useCartStore } from "@/store/useCartStore";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { processCheckout } from "@/app/actions/order";
+import { getUserProfile } from "@/app/actions/user";
 import { Truck, ShieldCheck, CreditCard } from "lucide-react";
 import Swal from "sweetalert2";
 import StepIndicator from '@/components/checkout/StepIndicator';
@@ -15,7 +16,7 @@ import { syncOrderWithMidtrans } from "@/app/actions/syncOrder";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const { items, getTotalPrice, removeSelectedItems } = useCartStore();
   const [loading, setLoading] = useState(false);
 
@@ -41,6 +42,57 @@ export default function CheckoutPage() {
       router.push("/");
     }
   }, [status, router]);
+
+  // Efek untuk mengisi data otomatis dari profil user secara real-time dari database
+  useEffect(() => {
+    async function loadUserProfile() {
+      if (session?.user) {
+        const userId = (session.user as any).id;
+        if (!userId) return;
+
+        const res = await getUserProfile(userId);
+        if (res.success && res.data) {
+          const user = res.data;
+          if (!firstName && user.name) setFirstName(user.name);
+          if (!email && user.email) setEmail(user.email);
+          if (!address && user.address) {
+            setAddress(user.address);
+          }
+
+          // Otomatis isi Provinsi, Kota, Kecamatan jika ada koordinat GPS
+          if (user.latitude && user.longitude) {
+            try {
+              const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${user.latitude}&lon=${user.longitude}&addressdetails=1`);
+              const geoData = await geoRes.json();
+              if (geoData && geoData.address) {
+                const addr = geoData.address;
+                // Nominatim kadang menyimpan provinsi di 'state', 'province', atau 'region'
+                const fetchedProvince = addr.state || addr.province || addr.region || addr.state_district || "";
+                const fetchedCity = addr.city || addr.town || addr.county || addr.municipality || "";
+                const fetchedDistrict = addr.suburb || addr.city_district || addr.district || addr.municipality || "";
+                const fetchedStreet = addr.village || addr.neighbourhood || addr.road || addr.hamlet || "";
+                
+                if (!province && fetchedProvince) setProvince(fetchedProvince);
+                if (!city && fetchedCity) setCity(fetchedCity);
+                if (!district && fetchedDistrict) setDistrict(fetchedDistrict);
+                if (!street && fetchedStreet) setStreet(fetchedStreet);
+              }
+            } catch (err) {
+              console.error("Gagal menarik data area GPS", err);
+            }
+          }
+
+        } else {
+          // Fallback menggunakan session token jika fetch gagal
+          const user = session.user as any;
+          if (!firstName && user.name) setFirstName(user.name);
+          if (!email && user.email) setEmail(user.email);
+          if (!address && user.address) setAddress(user.address);
+        }
+      }
+    }
+    loadUserProfile();
+  }, [session]);
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
