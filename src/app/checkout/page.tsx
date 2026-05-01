@@ -111,7 +111,7 @@ export default function CheckoutPage() {
       if (typeof (window as any).snap !== "undefined") {
         (window as any).snap.pay(res.snapToken, {
           onSuccess: async function (result: any) {
-            const sync = await syncOrderWithMidtrans(res.orderId, true);
+            const sync = await syncOrderWithMidtrans(res.orderId || "", true);
             Swal.fire({
               icon: sync.status === "COMPLETED" ? "success" : "warning",
               title: sync.status === "COMPLETED" ? "Pembayaran Berhasil!" : "Pembayaran Tertunda",

@@ -18,10 +18,8 @@ export default function Sidebar() {
     <aside className="w-64 bg-[#1a1a1a] text-gray-300 flex flex-col min-h-screen">
       <div className="h-[72px] flex items-center px-6 border-b border-gray-800">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-white text-black flex items-center justify-center rounded-lg font-black text-xs">
-             NS
-          </div>
-          <span className="text-white font-bold text-xl tracking-tight">Neo Admin</span>
+          <img src="/favicon.ico" alt="Xiaomi Logo" className="w-8 h-8 flex items-center justify-center rounded-lg font-black text-xs"/>
+          <span className="text-white font-bold text-xl tracking-tight">Xiaomi Admin</span>
         </Link>
       </div>
 

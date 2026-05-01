@@ -58,7 +58,7 @@ export default async function ProfilePage() {
           {/* DATA AKUN */}
           <div className="flex flex-col text-center md:text-left text-[#333]">
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-1">
-              {greeting}, {user.name || "Sobat Neo"}!
+              {greeting}, {user.name || "Sobat Xiaomi"}!
             </h1>
             <p className="text-sm font-medium opacity-70 mb-3 flex items-center justify-center md:justify-start gap-2">
               <span>✉️ {user.email}</span>
@@ -105,7 +105,7 @@ export default async function ProfilePage() {
              <Link href="/profile/benefits" className="p-8 lg:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50/30 transition-colors group relative">
                 <Heart size={40} strokeWidth={1.5} className="text-gray-400 group-hover:text-[#ff6700] group-hover:-translate-y-1 transition-all mb-4" />
                 <h3 className="font-bold text-gray-900 mb-2">Manfaat Eksklusif</h3>
-                <p className="text-xs text-gray-500">Klaim jaminan garansi 24 bulan dan akses prioritas pembelian untuk Neo Lovers.</p>
+                <p className="text-xs text-gray-500">Klaim jaminan garansi 24 bulan dan akses prioritas pembelian untuk Xiaomi Lovers.</p>
              </Link>
 
              {/* KARTU 4: Alamat */}

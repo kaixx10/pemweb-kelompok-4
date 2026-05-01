@@ -16,14 +16,14 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Neo Store | Smartphone & Gadget Kekinian Terlengkap",
-  description: "Belanja produk elektronik, smartphone, wearable, dan gadget original dengan garansi resmi dan pengiriman gratis se-Indonesia hanya di Neo Store.",
+  title: "Xiaomi Store | Smartphone & Gadget Kekinian Terlengkap",
+  description: "Belanja produk elektronik, smartphone, wearable, dan gadget original dengan garansi resmi dan pengiriman gratis se-Indonesia hanya di Xiaomi Store.",
   openGraph: {
-    title: "Neo Store | Smartphone & Gadget Kekinian",
+    title: "Xiaomi Store | Smartphone & Gadget Kekinian",
     description: "Nikmati pengalaman berbelanja gadget dengan antarmuka Bento UI modern. Temukan Poco, Redmi, dan Xiaomi edisi terbaru di sini!",
     type: "website",
     locale: "id_ID",
-    siteName: "Neo Store Indonesia",
+    siteName: "Xiaomi Store Indonesia",
   },
 };
 

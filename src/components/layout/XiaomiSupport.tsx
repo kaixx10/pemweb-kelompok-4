@@ -1,10 +1,16 @@
 "use client";
 
 import { Headphones, Mail, MapPin, MessageSquare } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation"; // 👈 Tambahkan usePathname
 import Swal from "sweetalert2";
 
 export default function XiaomiSupport() {
+  const router = useRouter();
+  const pathname = usePathname(); // 👈 Ambil URL halaman saat ini
+
+  // Jika BUKAN di halaman utama, JANGAN tampilkan komponen ini (return null)
+  if (pathname !== "/") return null;
+
   const supportItems = [
     {
       icon: <Headphones size={32} strokeWidth={1.5} />,
@@ -28,13 +34,13 @@ export default function XiaomiSupport() {
     },
   ];
 
-  const router = useRouter();
-
   const handleSupportClick = (title: string) => {
     if (title === "Hubungi Kami") {
       router.push("/support?action=email");
     } else if (title === "Alamat") {
       router.push("/profile/address");
+    } else if (title === "WhatsApp") {
+      router.push("https://api.whatsapp.com/send?phone=6282117236765");
     } else {
       Swal.fire({
         icon: "info",
@@ -46,7 +52,6 @@ export default function XiaomiSupport() {
   };
 
   return (
-    // bg-transparent agar warnanya sama dengan background abu-abu muda website Anda
     <section id="support" className="w-full bg-transparent py-16">
       <div className="max-w-[1440px] mx-auto px-6 lg:px-10">
         

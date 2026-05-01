@@ -54,7 +54,7 @@ export default async function ReviewsPage() {
           </Link>
           <div>
             <h1 className="text-3xl font-black text-gray-900 tracking-tight">Ulasan Saya</h1>
-            <p className="text-gray-500 text-sm mt-1">Riwayat penilaian Anda terhadap produk Neo Store</p>
+            <p className="text-gray-500 text-sm mt-1">Riwayat penilaian Anda terhadap produk Xiaomi Store</p>
           </div>
         </div>
 
