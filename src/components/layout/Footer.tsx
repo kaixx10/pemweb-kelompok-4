@@ -20,8 +20,8 @@ export default function Footer() {
               {/* Brand Section */}
               <div className="lg:col-span-1">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-black font-bold text-sm">N</div>
-                  <span className="font-bold text-lg text-white">Neo</span>
+                  <img src="/favicon.ico" alt="Xiaomi Logo" className="w-8 h-8 rounded-lg" />
+                  <span className="font-bold text-lg text-white">Xiaomi</span>
                 </div>
                 <p className="text-sm text-gray-500 leading-relaxed">
                   Toko elektronik modern dengan koleksi produk Xiaomi terlengkap dan harga terbaik.
@@ -32,11 +32,11 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-white mb-4 text-[15px]">Kategori</h3>
             <ul className="space-y-2.5">
-              <li><a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">Smartphone</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">Tablet</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">Smartwatch</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">Earbuds</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">Aksesori</a></li>
+              <li><Link href="/mobile" className="text-sm text-gray-500 hover:text-white transition-colors">Smartphone</Link></li>
+              <li><Link href="/?view_product=p178" className="text-sm text-gray-500 hover:text-white transition-colors">Tablet</Link></li>
+              <li><Link href="/wearables" className="text-sm text-gray-500 hover:text-white transition-colors">Smartwatch</Link></li>
+              <li><Link href="/?view_product=p5148" className="text-sm text-gray-500 hover:text-white transition-colors">Earbuds</Link></li>
+              <li><Link href="/lifestyle" className="text-sm text-gray-500 hover:text-white transition-colors">Aksesori</Link></li>
             </ul>
           </div>
 
@@ -58,11 +58,11 @@ export default function Footer() {
             <ul className="space-y-2.5">
               <li className="text-sm text-gray-500">
                 <span className="font-medium">Hubungi Kami:</span>
-                <div className="mt-1 text-white font-semibold">+62-812-3456-7890</div>
+                <div className="mt-1 text-white font-semibold">+62-821-1723-6765</div>
               </li>
               <li className="text-sm text-gray-500">
                 <span className="font-medium">Email:</span>
-                <div className="mt-1 text-white text-sm">support@neo.com</div>
+                <div className="mt-1 text-white text-sm">service.id@support.mi.com</div>
               </li>
               <li><a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">Track Pesanan</a></li>
               <li><a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">FAQ</a></li>
@@ -74,28 +74,28 @@ export default function Footer() {
             <h3 className="font-bold text-white mb-4 text-[15px]">Sosial Media</h3>
             <div className="flex gap-3">
               <a 
-                href="#" 
+                href="https://x.com/Xiaomi" 
                 className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white transition-all"
                 title="Twitter/X"
               >
                 <Share2 size={18} strokeWidth={2} />
               </a>
               <a 
-                href="#" 
+                href="https://www.instagram.com/xiaomi.indonesia?igsh=MW1jNWJ4YzE4ZzV5Ng==" 
                 className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white transition-all"
                 title="Instagram"
               >
                 <Heart size={18} strokeWidth={2} />
               </a>
               <a 
-                href="#" 
+                href="https://youtube.com/@xiaomi?si=Z_v7F3drom0xraL1" 
                 className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white transition-all"
                 title="YouTube"
               >
                 <Play size={18} strokeWidth={2} />
               </a>
               <a 
-                href="#" 
+                href="service.id@support.mi.com" 
                 className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white transition-all"
                 title="Email"
               >
@@ -112,7 +112,7 @@ export default function Footer() {
         {/* Bottom Footer */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 gap-4 text-xs text-gray-400">
           <p>
-            &copy; {new Date().getFullYear()} <span className="text-white">Neo.</span> Tugas Kuliah Semester 4
+            &copy; {new Date().getFullYear()} <span className="text-white">Xiaomi.</span> Tugas Kuliah Semester 4
           </p>
           <div className="flex gap-6">
             <a href="#" className="hover:text-white transition-colors">Kebijakan Privasi</a>

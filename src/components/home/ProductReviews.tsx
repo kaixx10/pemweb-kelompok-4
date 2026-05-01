@@ -64,7 +64,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
                     )}
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-gray-900">{review.user.name || "Pengguna Neo"}</p>
+                    <p className="text-sm font-bold text-gray-900">{review.user.name || "Pengguna Xiaomi"}</p>
                     <p className="text-[10px] text-gray-400 font-medium">
                       {new Date(review.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </p>

@@ -7,8 +7,8 @@ import Swal from "sweetalert2";
 
 const faqs = [
   {
-    question: "Berapa lama garansi produk Neo Store?",
-    answer: "Semua produk *smartphone* dan *smart home* resmi dari Neo Store memiliki garansi pabrik selama 12-24 bulan tergantung jenis produk. Aksesoris dan *wearables* memiliki garansi 6 bulan. Anda bisa mengklaim garansi di seluruh Service Center resmi terdekat."
+    question: "Berapa lama garansi produk Xiaomi Store?",
+    answer: "Semua produk *smartphone* dan *smart home* resmi dari Xiaomi Store memiliki garansi pabrik selama 12-24 bulan tergantung jenis produk. Aksesoris dan *wearables* memiliki garansi 6 bulan. Anda bisa mengklaim garansi di seluruh Service Center resmi terdekat."
   },
   {
     question: "Bagaimana cara melacak pesanan saya?",
@@ -101,7 +101,7 @@ export default function SupportPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-[#ff6700]/10 to-transparent pt-16 pb-20 px-4 text-center">
         <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">Pusat Bantuan</h1>
-        <p className="text-gray-600 mb-8 max-w-xl mx-auto">Kami siap membantu menjawab semua pertanyaan Anda terkait produk, garansi, dan pengiriman Neo Store.</p>
+        <p className="text-gray-600 mb-8 max-w-xl mx-auto">Kami siap membantu menjawab semua pertanyaan Anda terkait produk, garansi, dan pengiriman Xiaomi Store.</p>
         
         {/* Mock Search Bar */}
         <div className="max-w-2xl mx-auto relative group">

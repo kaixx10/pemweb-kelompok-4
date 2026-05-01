@@ -21,7 +21,7 @@ export default async function AdminOrdersPage() {
             <h1 className="text-2xl font-black text-gray-900 flex items-center gap-3">
               <ShoppingBag className="text-[#ff6700]" /> Manajemen Pesanan
             </h1>
-            <p className="text-sm text-gray-500 mt-1">Kelola seluruh transaksi dari pelanggan Neo Store.</p>
+            <p className="text-sm text-gray-500 mt-1">Kelola seluruh transaksi dari pelanggan Xiaomi Store.</p>
           </div>
         </div>
 

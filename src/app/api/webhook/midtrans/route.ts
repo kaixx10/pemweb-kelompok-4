@@ -26,18 +26,18 @@ export async function POST(req: Request) {
 
     if (transactionStatus === "capture") {
       // Pembayaran Kartu Kredit berhasil
-      newStatus = fraudStatus === "challenge" ? "PENDING" : "PROCESSING";
+      newStatus = fraudStatus === "challenge" ? ("PENDING" as OrderStatus) : ("PROCESSING" as OrderStatus);
     } else if (transactionStatus === "settlement") {
       // Pembayaran (E-Wallet/VA/QRIS) Lunas!
-      newStatus = "PROCESSING";
+      newStatus = "PROCESSING" as OrderStatus;
     } else if (
       transactionStatus === "cancel" ||
       transactionStatus === "deny" ||
       transactionStatus === "expire"
     ) {
-      newStatus = "CANCELLED";
+      newStatus = "CANCELLED" as OrderStatus;
     } else if (transactionStatus === "pending") {
-      newStatus = "PENDING";
+      newStatus = "PENDING" as OrderStatus;
     }
 
     // 3. Update Struk di Database jika ada perubahan status lunas/batal

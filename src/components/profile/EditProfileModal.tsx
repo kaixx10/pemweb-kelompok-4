@@ -66,7 +66,7 @@ export default function EditProfileModal({ user }: { user: { id: string, name: s
         Swal.fire({
           icon: "success",
            title: "Profil Diperbarui!",
-           text: "Informasimu berhasil diamankan di brankas Neo.",
+           text: "Informasimu berhasil diamankan di brankas Xiaomi.",
            confirmButtonColor: "#ff6700"
         });
         setIsOpen(false);
@@ -130,7 +130,7 @@ export default function EditProfileModal({ user }: { user: { id: string, name: s
                {/* FORMS */}
                <div className="flex flex-col gap-4 mt-2">
                  <div>
-                   <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 block">ID NEO</label>
+                   <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 block">ID XIAOMI</label>
                    <div className="w-full bg-gray-100 text-gray-500 px-4 py-3 rounded-xl border border-gray-200 text-sm font-mono cursor-not-allowed flex items-center gap-2">
                      <Shield size={16} className="text-gray-400" /> {user.id}
                    </div>

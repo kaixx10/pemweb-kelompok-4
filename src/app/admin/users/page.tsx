@@ -29,7 +29,7 @@ export default async function AdminUsersPage() {
             <h1 className="text-2xl font-black text-gray-900 flex items-center gap-3">
               <Users className="text-[#00bcd4]" /> Manajemen Pengguna
             </h1>
-            <p className="text-sm text-gray-500 mt-1">Lihat dan atur hak akses pelanggan Neo Store.</p>
+            <p className="text-sm text-gray-500 mt-1">Lihat dan atur hak akses pelanggan Xiaomi Store.</p>
           </div>
           <div className="text-sm font-bold text-gray-400 border border-gray-200 bg-white px-4 py-2 rounded-lg">
             Total {users.length} Akun

@@ -84,7 +84,7 @@ export default function SettingsPage() {
   const handleDeleteAccount = () => {
     Swal.fire({
       title: "Hapus Akun Permanen?",
-      text: "PERINGATAN: Semua data pesanan, alamat, ulasan, dan Neo Points akan terhapus selamanya dan tidak dapat dikembalikan!",
+      text: "PERINGATAN: Semua data pesanan, alamat, ulasan, dan Xiaomi Points akan terhapus selamanya dan tidak dapat dikembalikan!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#dc2626",

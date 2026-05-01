@@ -171,7 +171,7 @@ const removeVariant = (index: number) => {
                 className="w-full border border-gray-300 px-4 py-2.5 rounded-xl outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors"
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value, slug: e.target.value.toLowerCase().replace(/ /g, '-')})}
-                placeholder="e.g. Neo Smart Watch"
+                placeholder="e.g. Xiaomi Smart Watch"
               />
             </div>
             <div>
@@ -181,7 +181,7 @@ const removeVariant = (index: number) => {
                 className="w-full border border-gray-300 px-4 py-2.5 rounded-xl outline-none focus:border-black transition-colors"
                 value={formData.slug}
                 onChange={e => setFormData({...formData, slug: e.target.value})}
-                placeholder="neo-smart-watch"
+                placeholder="xiaomi-smart-watch"
               />
             </div>
           </div>

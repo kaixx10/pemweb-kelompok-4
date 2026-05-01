@@ -66,7 +66,7 @@ export default async function UserOrdersPage() {
         <div className="flex items-center justify-between mb-8">
            <div>
               <h1 className="text-3xl font-black text-gray-900 tracking-tight">Pesanan Saya</h1>
-              <p className="text-gray-500 mt-2">Lacak status dan riwayat belanja Anda di Neo Store</p>
+              <p className="text-gray-500 mt-2">Lacak status dan riwayat belanja Anda di Xiaomi Store</p>
            </div>
            <Link href="/profile" className="text-sm font-bold text-gray-500 hover:text-black transition-colors">
               Kembali ke Profil

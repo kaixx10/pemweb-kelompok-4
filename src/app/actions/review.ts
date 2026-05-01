@@ -18,7 +18,7 @@ export async function addReview(data: {
       return { success: false, error: "Harap login terlebih dahulu" };
     }
 
-    const userId = session.user.id;
+    const userId = (session.user as any).id;
 
     // Pastikan pesanan benar-benar COMPLETED dan milik user ini
     const orderItem = await prisma.orderItem.findUnique({

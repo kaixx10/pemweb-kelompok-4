@@ -27,7 +27,7 @@ export default function BenefitsPage() {
   const coupons = [
     { id: "c1", title: "Gratis Ongkir Super", desc: "Potongan ongkir s/d Rp 50.000 ke seluruh Indonesia", exp: "7 Hari Lagi", type: "orange" },
     { id: "c2", title: "Diskon 15% Aksesoris", desc: "Maksimal potongan Rp 100.000 khusus pembelian aksesoris", exp: "Akhir Bulan", type: "blue" },
-    { id: "c3", title: "Cashback Neo Points 20%", desc: "Dapatkan poin ganda untuk pembelian Smart TV", exp: "Besok Habis", type: "purple" },
+    { id: "c3", title: "Cashback Xiaomi Points 20%", desc: "Dapatkan poin ganda untuk pembelian Smart TV", exp: "Besok Habis", type: "purple" },
   ];
 
   return (
@@ -53,7 +53,7 @@ export default function BenefitsPage() {
           <div className="relative z-10">
             <div className="flex justify-between items-start mb-12">
               <div>
-                <p className="text-gray-400 text-sm font-medium mb-1">Neo Store Membership</p>
+                <p className="text-gray-400 text-sm font-medium mb-1">Xiaomi Store Membership</p>
                 <div className="flex items-center gap-2">
                   <h2 className="text-3xl font-black bg-gradient-to-r from-amber-200 to-yellow-500 bg-clip-text text-transparent">GOLD MEMBER</h2>
                   <Sparkles size={20} className="text-yellow-400" />
@@ -70,7 +70,7 @@ export default function BenefitsPage() {
                 <p className="text-xl font-bold tracking-wide">{user?.name || "Pelanggan Setia"}</p>
               </div>
               <div className="text-right">
-                <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Neo Points</p>
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Xiaomi Points</p>
                 <p className="text-2xl font-black text-[#ff6700]">12,450</p>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function BenefitsPage() {
                 <div className="absolute bottom-0 -right-2.5 w-5 h-5 bg-white rounded-full translate-y-1/2"></div>
                 
                 <TicketPercent size={32} className="opacity-80 mb-2" />
-                <span className="font-black text-lg text-center leading-tight">NEO<br/>PERKS</span>
+                <span className="font-black text-lg text-center leading-tight">XIAOMI<br/>PERKS</span>
               </div>
               <div className="p-5 flex-1 flex flex-col justify-center bg-white relative">
                 <div className="flex justify-between items-start mb-1">

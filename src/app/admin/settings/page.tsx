@@ -10,7 +10,7 @@ export default function AdminSettingsPage() {
             <h1 className="text-2xl font-black text-gray-900 flex items-center gap-3">
               <Building2 className="text-[#ff6700]" /> Pengaturan Toko
             </h1>
-            <p className="text-sm text-gray-500 mt-1">Konfigurasi pengaturan fundamental untuk operasional Neo Store.</p>
+            <p className="text-sm text-gray-500 mt-1">Konfigurasi pengaturan fundamental untuk operasional Xiaomi Store.</p>
             <p className="text-xs text-orange-600 bg-orange-50 font-semibold px-3 py-1.5 rounded-lg mt-2 inline-block">
               Catatan: Untuk pengaturan Data Diri/Ganti Foto, silakan buka menu "Pusat Pelanggan (Profile)" dari ikon navigasi di atas.
             </p>
@@ -29,12 +29,12 @@ export default function AdminSettingsPage() {
                    <div className="flex flex-col gap-4">
                       <div>
                          <label className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1.5 block">Nama Toko *</label>
-                         <input type="text" defaultValue="Neo Store Indonesia" className="w-full bg-white text-gray-900 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold focus:border-[#ff6700] outline-none" />
+                         <input type="text" defaultValue="Xiaomi Store Indonesia" className="w-full bg-white text-gray-900 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold focus:border-[#ff6700] outline-none" />
                       </div>
                       
                       <div>
                          <label className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1.5 block">Alamat Email Dukungan Resmi</label>
-                         <input type="email" defaultValue="support@neostore.co.id" className="w-full bg-white text-gray-900 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold focus:border-[#ff6700] outline-none" />
+                         <input type="email" defaultValue="support@xiaomistore.co.id" className="w-full bg-white text-gray-900 px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold focus:border-[#ff6700] outline-none" />
                       </div>
 
                       <div>
