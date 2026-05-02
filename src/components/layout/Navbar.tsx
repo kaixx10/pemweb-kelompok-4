@@ -491,18 +491,18 @@ export default function Navbar() {
                       </ul>
                       <h4 className="font-bold text-gray-900 text-sm mt-4 mb-1">Health & Fitness</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Pets Care</li>
-                        <li className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Clothing Care <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Water Bottles</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo0r1vd0001b84oxnckyjdq'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Pets Care</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo0r1vk0003b84o9a47b592'); }} className="hover:text-[#ff6700] cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Clothing Care <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo0r1vr0005b84o34lpv67n'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Water Bottles</li>
                       </ul>
                    </div>
                    <div className="flex flex-col gap-4">
                       <h4 className="font-bold text-gray-900 text-sm mb-1">Outdoors</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li className="text-black cursor-pointer hover:translate-x-1 transition-transform">Scooters</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxwy0001ldcihwd735ra'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Scooters</li>
                         <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Glasses</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Luggages</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Air Compressors</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxx90003ldcicmuhft4v'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Luggages</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxxf0005ldci663o7gce'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Air Compressors</li>
                       </ul>
                       <h4 className="font-bold text-gray-900 text-sm mt-4 mb-1">Tools</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
@@ -513,11 +513,11 @@ export default function Navbar() {
                    <div className="flex flex-col gap-4">
                       <h4 className="font-bold text-gray-900 text-sm mb-1">Offices</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Monitors <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Routers</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Extenders</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Tablets</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Accessories</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09eyp0001rhltgy8y0cgu'); }} className="hover:text-[#ff6700] cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Monitors <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ez00003rhlt76eh5c96'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Routers</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ez50005rhltzx0jx8rt'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Extenders</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ezc0009rhltnnkwtu1m'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Tablets</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ez90007rhlthbzwyiqw'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Accessories</li>
                       </ul>
                    </div>
                    <div className="flex flex-col gap-4">
@@ -535,18 +535,18 @@ export default function Navbar() {
                      Online 24 produk baru <span className="text-gray-400 group-hover/link:text-black transition-colors">&gt;</span>
                   </h4>
                   <div className="grid grid-cols-2 grid-rows-2 gap-4 flex-1">
-                     <div className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="https://i01.appmifile.com/webfile/globalimg/products/pc/mi-braided-usb-type-c-cable/specs-01.png" alt="Braided Cable" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
-                        <span className="text-[10px] font-semibold text-gray-600 leading-tight">Braided USB-C Cable (10cm)</span>
-                     </div>
-                     <div className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="https://i02.appmifile.com/mi-com-product/fly-birds/xiaomi-magnetic-power-bank-6000mah/pc/7fc7868ab1cc7bcda93510522c069ff3.png" alt="Power Bank" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
-                        <span className="text-[10px] font-semibold text-gray-600 leading-tight">UltraThin Magnetic Bank</span>
-                     </div>
-                     <div className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1603444458.1969440.png" alt="Fast Charger" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
-                        <span className="text-[10px] font-semibold text-gray-600 leading-tight">20W Fast Charging Auth</span>
-                     </div>
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxwy0001ldcihwd735ra'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                         <img src="/uploads/products/scooter-4-lite.png" alt="Scooter" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
+                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Xiaomi Scooter 4 Lite</span>
+                      </div>
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxx90003ldcicmuhft4v'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                         <img src="/uploads/products/luggage-classic-pro.png" alt="Luggage" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
+                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Xiaomi Luggage Classic Pro</span>
+                      </div>
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxxf0005ldci663o7gce'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                         <img src="/uploads/products/air-compressor-1s.png" alt="Air Compressor" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
+                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Portable Air Compressor 1S</span>
+                      </div>
                      <div className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
                         <img src="https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1604044521.16834169.png" alt="Lint Remover" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Mijia Lint Remover 2</span>
