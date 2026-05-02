@@ -1,13 +1,12 @@
 "use client";
 
-import { Search, ShoppingBag, User, ArrowDownUp } from "lucide-react";
+import { Search, ShoppingBag, X, User, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useCartStore } from "@/store/useCartStore";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useAuthModalStore } from "@/store/useAuthModalStore";
-import { useFilterStore } from "@/store/useFilterStore";
 
 interface SearchResult {
   id: string;
@@ -55,8 +54,17 @@ export default function Navbar() {
 
   // Cart store
   const { getTotalItems } = useCartStore();
-  const { sortOrder, setSortOrder } = useFilterStore();
   const totalItems = mounted ? getTotalItems() : 0;
+
+  // Search expand state
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchOpen]);
 
   // Local state for auto-complete search
   const [localSearchQuery, setLocalSearchQuery] = useState("");
@@ -163,36 +171,58 @@ export default function Navbar() {
 
         {/* Right Section Wrapper */}
         <div className="flex items-center h-full ml-auto z-[60]" onMouseEnter={() => handleMouseEnter('none')}>
-          {/* Secondary Links (Support only) */}
-          <ul className="hidden lg:flex items-center h-full mr-2 z-[60]">
-            <li className="h-full flex items-center group">
-              <Link href="/#support" className="text-[13px] font-medium cursor-pointer px-3 xl:px-4 relative flex items-center h-full pt-[2px] transition-colors group-hover:text-[#ff6700] text-gray-800">
-                Support
-                <span className="absolute bottom-0 left-3 xl:left-4 right-3 xl:right-4 h-[2px] transition-colors bg-transparent group-hover:bg-[#ff6700]"></span>
-              </Link>
-            </li>
-          </ul>
-
-          {/* Right Nav Options (Search, Sorting, Cart, Profile) */}
-          <div className="flex items-center gap-3 border-l border-gray-200 pl-4 h-full z-[60]">
+          
+          {/* Right Nav Options (Search, Support, Cart, Profile) */}
+          <div className="flex items-center gap-4 h-full z-[60]">
             
-            {/* 1. Fitur Search (Mirip Xiaomi) dengan Lebar Lebih Panjang */}
-            <div className="flex items-center gap-1.5 md:gap-3 relative">
-              <div className="flex items-center gap-1.5 bg-gray-100 px-3 py-2 rounded-full border border-gray-200 focus-within:border-[#ff6700] transition-colors relative z-10 w-[240px] lg:w-[320px]">
-                <Search size={18} className="text-gray-500 flex-shrink-0" />
-                <input
-                  type="text"
-                  placeholder="Cari produk..."
-                  value={localSearchQuery}
-                  onChange={(e) => setLocalSearchQuery(e.target.value)}
-                  className="bg-transparent outline-none text-xs w-full text-black placeholder-gray-400 focus:placeholder-[#ff6700]/50"
+            {/* 1. Fitur Search - Expandable Ikon ala Xiaomi */}
+            <div className="flex items-center relative">
+              {/* Overlay gelap saat search terbuka */}
+              {isSearchOpen && (
+                <div 
+                  className="fixed inset-0 bg-black/10 z-40"
+                  onClick={() => { setIsSearchOpen(false); setLocalSearchQuery(""); }}
                 />
+              )}
+
+              {/* Input yang expand dari kanan */}
+              <div className={`flex items-center gap-2 rounded-full border transition-all duration-300 overflow-hidden relative z-50 group/search
+                ${isSearchOpen 
+                  ? 'bg-transparent border-[#ff6700] w-[280px] px-3 py-2' 
+                  : 'bg-transparent border-transparent w-8 h-8 justify-center cursor-pointer'
+                }`}
+                onClick={() => !isSearchOpen && setIsSearchOpen(true)}
+              >
+                <Search size={16} className={`flex-shrink-0 transition-colors ${isSearchOpen ? 'text-[#ff6700]' : 'text-gray-600 group-hover/search:text-[#ff6700]'}`} />
+                {isSearchOpen && (
+                  <>
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      placeholder="Cari produk..."
+                      value={localSearchQuery}
+                      onChange={(e) => setLocalSearchQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && localSearchQuery.trim()) {
+                          setIsSearchOpen(false);
+                          router.push(`/search?q=${encodeURIComponent(localSearchQuery)}`);
+                        }
+                      }}
+                      className="bg-transparent outline-none text-xs w-full text-black placeholder-gray-400"
+                    />
+                    {localSearchQuery && (
+                      <button onClick={(e) => { e.stopPropagation(); setLocalSearchQuery(""); }} className="text-gray-400 hover:text-gray-700">
+                        <X size={14} />
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
 
-              {/* Drowpdown Auto-complete */}
-              {localSearchQuery.length > 0 && (
-                <div className="absolute top-full right-0 left-0 pt-3 z-50">
-                  <div className="bg-white border text-left border-gray-100 shadow-xl rounded-xl overflow-hidden py-2 w-full">
+              {/* Dropdown Autocomplete */}
+              {isSearchOpen && localSearchQuery.length > 0 && (
+                <div className="absolute top-full right-0 pt-3 z-50" style={{minWidth: '280px'}}>
+                  <div className="bg-white border text-left border-gray-100 shadow-xl rounded-xl overflow-hidden py-2">
                     {isSearchSearching ? (
                       <div className="px-4 py-3 text-xs text-gray-400 text-center">Sedang mencari...</div>
                     ) : searchResults.length > 0 ? (
@@ -201,8 +231,9 @@ export default function Navbar() {
                           <li key={product.id}>
                             <button
                               onClick={() => {
-                                setLocalSearchQuery(""); // Bersihkan input
-                                router.push(`/?view_product=${product.id}`); // Memicu Quick View di Homepage
+                                setLocalSearchQuery("");
+                                setIsSearchOpen(false);
+                                router.push(`/?view_product=${product.id}`);
                               }}
                               className="w-full text-left px-4 py-2.5 text-[12px] font-bold text-gray-700 hover:bg-gray-50 hover:text-[#ff6700] transition-colors flex items-center justify-between group"
                             >
@@ -220,39 +251,14 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* 2. Fitur Sorting (Urutkan) */}
-            <div className="relative group/sort">
-              <button className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-full border border-gray-200 hover:border-[#ff6700] transition-colors text-gray-600 hover:text-[#ff6700]">
-                <ArrowDownUp size={16} />
-                <span className="text-xs font-semibold capitalize hidden md:block">
-                  {sortOrder === "none" ? "Urutkan" : sortOrder === "asc" ? "Harga Terendah" : "Harga Tertinggi"}
-                </span>
-              </button>
-              
-              {/* Dropdown Sorting */}
-              <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover/sort:opacity-100 group-hover/sort:visible transition-all duration-200 z-50">
-                <div className="bg-white border border-gray-100 shadow-xl rounded-xl overflow-hidden w-40 flex flex-col py-1">
-                  <button 
-                    onClick={() => setSortOrder("none")} 
-                    className={`px-4 py-2.5 text-xs font-bold text-left transition-colors ${sortOrder === "none" ? "bg-orange-50 text-[#ff6700]" : "text-gray-600 hover:bg-gray-50"}`}
-                  >
-                    Rekomendasi
-                  </button>
-                  <button 
-                    onClick={() => setSortOrder("asc")} 
-                    className={`px-4 py-2.5 text-xs font-bold text-left transition-colors ${sortOrder === "asc" ? "bg-orange-50 text-[#ff6700]" : "text-gray-600 hover:bg-gray-50"}`}
-                  >
-                    Harga Terendah
-                  </button>
-                  <button 
-                    onClick={() => setSortOrder("desc")} 
-                    className={`px-4 py-2.5 text-xs font-bold text-left transition-colors ${sortOrder === "desc" ? "bg-orange-50 text-[#ff6700]" : "text-gray-600 hover:bg-gray-50"}`}
-                  >
-                    Harga Tertinggi
-                  </button>
-                </div>
-              </div>
-            </div>
+            {/* 2. Fitur Support (Ikon) */}
+            <Link 
+              href="/#support" 
+              className="text-gray-600 hover:text-[#ff6700] transition-colors p-1.5"
+              title="Support"
+            >
+              <HelpCircle size={20} strokeWidth={2} />
+            </Link>
 
             {/* 3. Fitur Keranjang */}
             <button
@@ -263,11 +269,11 @@ export default function Navbar() {
                 }
                 router.push('/cart');
               }}
-              className="text-gray-600 hover:text-black transition-colors relative p-1.5"
+              className="text-gray-600 hover:text-[#ff6700] transition-colors relative p-1.5"
             >
               <ShoppingBag size={20} strokeWidth={2} />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-[#ff6700] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
                   {totalItems}
                 </span>
               )}
@@ -306,6 +312,11 @@ export default function Navbar() {
                     <Link href="/profile/orders" onClick={() => setIsProfileDropdownOpen(false)} className="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-orange-50 hover:text-[#ff6700] transition-colors w-full text-left flex justify-between items-center">
                       Pesanan {totalItems > 0 && <span className="w-4 h-4 rounded-full bg-[#ff6700] text-white text-[9px] flex items-center justify-center">{totalItems}</span>}
                     </Link>
+                    {(session?.user as any)?.role === "ADMIN" && (
+                      <Link href="/admin" onClick={() => setIsProfileDropdownOpen(false)} className="px-4 py-2 text-xs font-bold text-[#ff6700] hover:bg-orange-50 transition-colors w-full text-left flex items-center gap-2">
+                        ⚡ Admin Panel
+                      </Link>
+                    )}
                   </div>
                   <div className="h-px bg-gray-100 w-full"></div>
                   

@@ -1,182 +1,176 @@
 "use client";
 
-import { ArrowLeft, Bell, Mail, MessageSquare, Tag, Smartphone, Save, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Bell, Package, CheckCircle2, Truck, XCircle, Clock, CreditCard } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import Swal from "sweetalert2";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+
+interface OrderNotification {
+  id: string;
+  orderId: string;
+  status: string;
+  total: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export default function NotificationsPage() {
-  const [preferences, setPreferences] = useState({
-    promoEmail: true,
-    promoSms: false,
-    orderWhatsapp: true,
-    orderEmail: true,
-    recommendations: false,
-    securityAlerts: true,
-  });
+  const { data: session } = useSession();
+  const [orders, setOrders] = useState<OrderNotification[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [isSaving, setIsSaving] = useState(false);
+  useEffect(() => {
+    async function fetchOrders() {
+      if (!session?.user) return;
+      try {
+        const res = await fetch("/api/notifications");
+        const data = await res.json();
+        if (data.success) {
+          setOrders(data.orders);
+        }
+      } catch (err) {
+        console.error("Gagal memuat notifikasi:", err);
+      }
+      setLoading(false);
+    }
+    fetchOrders();
+  }, [session]);
 
-  const toggle = (key: keyof typeof preferences) => {
-    setPreferences(prev => ({ ...prev, [key]: !prev[key] }));
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case "COMPLETED":
+        return {
+          icon: <CheckCircle2 size={20} />,
+          color: "text-green-600",
+          bg: "bg-green-50",
+          border: "border-green-100",
+          title: "Pesanan Selesai",
+          desc: "Pesanan Anda telah berhasil diselesaikan. Terima kasih telah berbelanja!",
+        };
+      case "SHIPPED":
+        return {
+          icon: <Truck size={20} />,
+          color: "text-blue-600",
+          bg: "bg-blue-50",
+          border: "border-blue-100",
+          title: "Pesanan Dikirim",
+          desc: "Paket Anda sedang dalam perjalanan menuju alamat tujuan.",
+        };
+      case "PAID":
+        return {
+          icon: <CreditCard size={20} />,
+          color: "text-indigo-600",
+          bg: "bg-indigo-50",
+          border: "border-indigo-100",
+          title: "Pembayaran Diterima",
+          desc: "Pembayaran berhasil! Pesanan Anda sedang diproses.",
+        };
+      case "CANCELLED":
+        return {
+          icon: <XCircle size={20} />,
+          color: "text-red-500",
+          bg: "bg-red-50",
+          border: "border-red-100",
+          title: "Pesanan Dibatalkan",
+          desc: "Pesanan ini telah dibatalkan.",
+        };
+      default:
+        return {
+          icon: <Clock size={20} />,
+          color: "text-amber-600",
+          bg: "bg-amber-50",
+          border: "border-amber-100",
+          title: "Menunggu Pembayaran",
+          desc: "Segera selesaikan pembayaran agar pesanan Anda diproses.",
+        };
+    }
   };
 
-  const handleSave = () => {
-    setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
-      Swal.fire({
-        icon: "success",
-        title: "Tersimpan!",
-        text: "Preferensi notifikasi Anda berhasil diperbarui.",
-        confirmButtonColor: "#ff6700",
-      });
-    }, 800);
-  };
+  const formatIDR = (n: number) =>
+    new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(n);
 
-  const ToggleSwitch = ({ checked, onChange }: { checked: boolean, onChange: () => void }) => (
-    <button 
-      onClick={onChange}
-      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#ff6700] focus:ring-offset-2 ${checked ? 'bg-[#ff6700]' : 'bg-gray-200'}`}
-      role="switch"
-      aria-checked={checked}
-    >
-      <span 
-        aria-hidden="true" 
-        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${checked ? 'translate-x-5' : 'translate-x-0'}`} 
-      />
-    </button>
-  );
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHour = Math.floor(diffMs / 3600000);
+    const diffDay = Math.floor(diffMs / 86400000);
+
+    if (diffMin < 1) return "Baru saja";
+    if (diffMin < 60) return `${diffMin} menit lalu`;
+    if (diffHour < 24) return `${diffHour} jam lalu`;
+    if (diffDay < 7) return `${diffDay} hari lalu`;
+    return d.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+  };
 
   return (
     <main className="min-h-screen bg-gray-50 pb-20 pt-28 font-sans">
       <div className="max-w-[800px] mx-auto px-6">
-        
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link href="/profile" className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors border border-gray-200 shadow-sm">
             <ArrowLeft size={20} className="text-gray-700" />
           </Link>
           <div>
-            <h1 className="text-3xl font-black text-gray-900 tracking-tight">Preferensi Notifikasi</h1>
-            <p className="text-gray-500 text-sm mt-1">Atur bagaimana kami berkomunikasi dengan Anda</p>
+            <h1 className="text-3xl font-black text-gray-900 tracking-tight">Notifikasi</h1>
+            <p className="text-gray-500 text-sm mt-1">Riwayat update pesanan Anda</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-6">
-          
-          {/* Section: Promo & Penawaran */}
-          <div className="p-6 md:p-8 border-b border-gray-100">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="bg-orange-50 p-2.5 rounded-xl text-[#ff6700]">
-                <Tag size={20} />
-              </div>
-              <h2 className="text-lg font-bold text-gray-900">Promo & Penawaran Khusus</h2>
-            </div>
-            
-            <div className="space-y-6 pl-2 md:pl-14">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-1 flex items-center gap-2">
-                    <Mail size={16} className="text-gray-400" /> Email Promo
-                  </h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">Dapatkan info eksklusif tentang produk terbaru, diskon, dan acara spesial langsung di kotak masuk Anda.</p>
-                </div>
-                <div className="pt-1"><ToggleSwitch checked={preferences.promoEmail} onChange={() => toggle('promoEmail')} /></div>
-              </div>
-              
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-1 flex items-center gap-2">
-                    <MessageSquare size={16} className="text-gray-400" /> SMS Promosi
-                  </h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">Terima kode kupon kilat (Flash Sale) via SMS.</p>
-                </div>
-                <div className="pt-1"><ToggleSwitch checked={preferences.promoSms} onChange={() => toggle('promoSms')} /></div>
-              </div>
-            </div>
+        {loading ? (
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-12 text-center">
+            <div className="w-8 h-8 border-3 border-gray-200 border-t-[#ff6700] rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-400 text-sm font-medium">Memuat notifikasi...</p>
           </div>
-
-          {/* Section: Transaksi */}
-          <div className="p-6 md:p-8 border-b border-gray-100">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="bg-blue-50 p-2.5 rounded-xl text-blue-600">
-                <Bell size={20} />
-              </div>
-              <h2 className="text-lg font-bold text-gray-900">Pesanan & Transaksi</h2>
-            </div>
-            
-            <div className="space-y-6 pl-2 md:pl-14">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-1 flex items-center gap-2">
-                    <Smartphone size={16} className="text-gray-400" /> Notifikasi WhatsApp
-                  </h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">Update status pengiriman, resi kurir, dan pembayaran secara real-time via WhatsApp.</p>
-                </div>
-                <div className="pt-1"><ToggleSwitch checked={preferences.orderWhatsapp} onChange={() => toggle('orderWhatsapp')} /></div>
-              </div>
-              
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-1 flex items-center gap-2">
-                    <Mail size={16} className="text-gray-400" /> Faktur Email
-                  </h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">Kirim ringkasan struk belanja (invoice) ke email setelah pembayaran berhasil.</p>
-                </div>
-                <div className="pt-1"><ToggleSwitch checked={preferences.orderEmail} onChange={() => toggle('orderEmail')} /></div>
-              </div>
-            </div>
+        ) : orders.length === 0 ? (
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-16 text-center">
+            <Bell size={48} className="text-gray-200 mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Belum Ada Notifikasi</h3>
+            <p className="text-gray-500 text-sm">Notifikasi akan muncul saat Anda memiliki pesanan.</p>
+            <Link href="/" className="inline-block mt-6 bg-[#ff6700] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#e05a00] transition-colors">
+              Mulai Belanja
+            </Link>
           </div>
-
-          {/* Section: Akun & Keamanan */}
-          <div className="p-6 md:p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="bg-purple-50 p-2.5 rounded-xl text-purple-600">
-                <ShieldCheck size={20} className="text-purple-600 hidden" /> {/* Shield Icon Replacement */}
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-              </div>
-              <h2 className="text-lg font-bold text-gray-900">Privasi & Sistem</h2>
-            </div>
-            
-            <div className="space-y-6 pl-2 md:pl-14">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-1">Rekomendasi Personal</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">Izinkan sistem melacak riwayat pencarian Anda untuk memberikan saran produk yang lebih akurat.</p>
-                </div>
-                <div className="pt-1"><ToggleSwitch checked={preferences.recommendations} onChange={() => toggle('recommendations')} /></div>
-              </div>
-              
-              <div className="flex items-start justify-between gap-4 opacity-50 cursor-not-allowed">
-                <div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-1">Peringatan Keamanan (Wajib)</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">Notifikasi percobaan login mencurigakan atau perubahan kata sandi.</p>
-                </div>
-                <div className="pt-1"><ToggleSwitch checked={true} onChange={() => {}} /></div>
-              </div>
-            </div>
+        ) : (
+          <div className="space-y-3">
+            {orders.map((order) => {
+              const config = getStatusConfig(order.status);
+              return (
+                <Link
+                  key={order.id}
+                  href="/profile/orders"
+                  className={`block bg-white rounded-2xl shadow-sm border ${config.border} p-5 hover:shadow-md transition-all group`}
+                >
+                  <div className="flex gap-4">
+                    <div className={`w-11 h-11 rounded-xl ${config.bg} ${config.color} flex items-center justify-center flex-shrink-0`}>
+                      {config.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="font-bold text-gray-900 text-sm group-hover:text-[#ff6700] transition-colors">
+                          {config.title}
+                        </h3>
+                        <span className="text-[10px] text-gray-400 font-bold flex-shrink-0 ml-2">
+                          {formatDate(order.updatedAt)}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500 mb-2">{config.desc}</p>
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] text-gray-400 font-bold bg-gray-50 px-2 py-0.5 rounded">
+                          #{order.orderId.slice(0, 15)}
+                        </span>
+                        <span className="text-xs font-bold text-gray-700">
+                          {formatIDR(order.total)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
-        </div>
-
-        {/* Action Button */}
-        <div className="flex justify-end">
-          <button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="bg-[#ff6700] hover:bg-[#ff6700]/90 text-white font-bold py-3.5 px-8 rounded-xl transition-colors flex items-center gap-2 disabled:opacity-70 shadow-sm shadow-[#ff6700]/20"
-          >
-            {isSaving ? (
-              <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            ) : (
-              <>
-                <Save size={18} />
-                Simpan Preferensi
-              </>
-            )}
-          </button>
-        </div>
-
+        )}
       </div>
     </main>
   );

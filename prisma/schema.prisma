@@ -156,6 +156,35 @@ model User {
   orders        Order[]
   reviews       Review[]
   cart          Cart?     // Relasi murni: 1 User maksimal hanya punya 1 Cart aktif
+  userCoupons   UserCoupon[]
+  chatRooms     ChatRoom[]     @relation("CustomerChats")
+  adminChats    ChatRoom[]     @relation("AdminChats")
+  chatMessages  ChatMessage[]
+}
+
+model Coupon {
+  id           String       @id @default(cuid())
+  code         String       @unique
+  description  String?
+  discountType String       // 'percentage' atau 'fixed'
+  value        Int
+  minPurchase  Int?         @default(0)
+  maxDiscount  Int?
+  expiryDate   DateTime?
+  userCoupons  UserCoupon[]
+  createdAt    DateTime     @default(now())
+}
+
+model UserCoupon {
+  id        String   @id @default(cuid())
+  userId    String
+  couponId  String
+  isUsed    Boolean  @default(false)
+  claimedAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coupon    Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, couponId])
 }
 
 model VerificationToken {
@@ -179,4 +208,42 @@ model Review {
   orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
 
   createdAt   DateTime  @default(now())
+}
+
+model ChatRoom {
+  id         String       @id @default(cuid())
+  customerId String
+  adminId    String?
+  status     ChatStatus   @default(WAITING)
+  subject    String?
+  customer   User         @relation("CustomerChats", fields: [customerId], references: [id], onDelete: Cascade)
+  admin      User?        @relation("AdminChats", fields: [adminId], references: [id], onDelete: SetNull)
+  messages   ChatMessage[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@index([customerId])
+  @@index([adminId])
+}
+
+model ChatMessage {
+  id         String   @id @default(cuid())
+  chatRoomId String
+  senderId   String
+  message    String?  @db.Text
+  fileUrl    String?  @db.Text
+  fileType   String?  // 'image', 'file', dll
+  isRead     Boolean  @default(false)
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+  sender     User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@index([chatRoomId])
+  @@index([senderId])
+}
+
+enum ChatStatus {
+  WAITING
+  ACTIVE
+  RESOLVED
 }

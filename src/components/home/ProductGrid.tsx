@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 import { useCartStore } from "@/store/useCartStore";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, ArrowDownUp } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -34,7 +34,7 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
     setMounted(true);
   }, []);
   
-  const { searchQuery, sortOrder } = useFilterStore();;
+  const { searchQuery, sortOrder, setSortOrder } = useFilterStore();
   const searchParams = useSearchParams();
   const viewProductId = searchParams.get('view_product');
 
@@ -67,7 +67,8 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
       desc: p.description,
       featured: p.slug?.includes('ultra'),
       categoryName: p.categoryName || "",
-      variants: p.variants || []
+      variants: p.variants || [],
+      stock: p.stock ?? 0,
     };
   });
   // Fungsi untuk membuka Modal & otomatis memilih varian pertama (jika ada)
@@ -128,6 +129,8 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
       e.preventDefault();
     }
     
+    if (product.stock <= 0) return;
+    
     // Jika produk punya varian, jangan langsung masuk keranjang! Paksa Buka Modal.
     if (product.variants && product.variants.length > 0) {
       openProductModal(product);
@@ -142,7 +145,7 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
     addToCart({
       id: product.id,
       name: product.name,
-      price: product.basePrice, // Sekarang mengambil basePrice yang benar
+      price: product.basePrice,
       img: product.img,
       desc: product.desc,
     });
@@ -155,6 +158,8 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
       e.stopPropagation();
       e.preventDefault();
     }
+    
+    if (product.stock <= 0) return;
     
     if (product.variants && product.variants.length > 0) {
       openProductModal(product);
@@ -221,27 +226,33 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
     );
   }
 
-  const renderProductCard = (product: any) => (
+  const renderProductCard = (product: any) => {
+    const outOfStock = product.stock <= 0;
+    return (
     <div 
       key={product.id} 
-      onClick={() => openProductModal(product)} // Gunakan openProductModal
-      className="bg-white rounded-[2rem] hover:-translate-y-1 hover:shadow-xl shadow-gray-200/50 transition-all duration-300 flex flex-col items-center justify-between p-6 md:p-8 text-center cursor-pointer group border border-gray-100 relative"
+      onClick={() => openProductModal(product)}
+      className={`bg-white rounded-[2rem] hover:-translate-y-1 hover:shadow-xl shadow-gray-200/50 transition-all duration-300 flex flex-col items-center justify-between p-6 md:p-8 text-center cursor-pointer group border border-gray-100 relative ${outOfStock ? 'opacity-70' : ''}`}
     >
-      {product.name.includes("Mijia") || product.name.includes("17") ? 
+      {outOfStock && (
+        <span className="absolute top-4 left-4 md:top-6 md:left-6 bg-red-500 text-white text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider z-20">Stok Habis</span>
+      )}
+      {!outOfStock && (product.name.includes("Mijia") || product.name.includes("17")) ? 
         <span className="bg-yellow-100 border border-gray-300 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded-sm absolute top-6 left-6 hidden md:block">Baru</span> : null
       }
       <button
         onClick={(e) => handleAddToCart(product, e)}
+        disabled={outOfStock}
         className={`absolute top-4 right-4 md:top-6 md:right-6 p-2 md:p-2.5 rounded-full transition-all duration-300 flex items-center justify-center z-10 ${
+          outOfStock ? 'bg-gray-100 text-gray-300 cursor-not-allowed' :
           addedNotification === product.id ? 'bg-green-500 text-white scale-110 shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-black hover:text-white'
         }`}
       >
         <ShoppingCart size={16} strokeWidth={2.5} />
       </button>
-      <div className="w-24 h-24 md:w-32 md:h-32 mb-6 mt-4 flex items-center justify-center text-6xl md:text-7xl group-hover:scale-110 transition-transform duration-500 drop-shadow-lg flex-shrink-0 relative">
+      <div className={`w-24 h-24 md:w-32 md:h-32 mb-6 mt-4 flex items-center justify-center text-6xl md:text-7xl group-hover:scale-110 transition-transform duration-500 drop-shadow-lg flex-shrink-0 relative ${outOfStock ? 'grayscale' : ''}`}>
         {product.img && (product.img.startsWith('http') || product.img.startsWith('/')) ? (
           <>
-            {/* Image Next.js */}
             <Image src={product.img} alt={product.name} fill sizes="(max-width: 768px) 96px, 128px" className="object-contain drop-shadow-md" />
           </>
         ) : (
@@ -255,38 +266,65 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
       </div>
       <button
         onClick={(e) => handleBuyNow(product, e)}
-        className="w-full bg-gray-900 text-white py-2 md:py-2.5 rounded-lg font-bold text-xs md:text-sm hover:bg-black transition-colors"
+        disabled={outOfStock}
+        className={`w-full py-2 md:py-2.5 rounded-lg font-bold text-xs md:text-sm transition-colors ${
+          outOfStock ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-900 text-white hover:bg-black'
+        }`}
       >
-        Beli sekarang
+        {outOfStock ? 'Stok Habis' : 'Beli sekarang'}
       </button>
     </div>
   );
+  };
 
   return (
     <section className="w-full bg-transparent py-8 pb-16">
       <div className="max-w-[1440px] mx-auto px-6 lg:px-10">
-        {/* Header Category - Posisikan ke Tengah */}
-        <div className="flex flex-col items-center mb-12 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-6">
+        {/* Header Category */}
+        <div className="flex items-center justify-between mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
             Category Product
           </h2>
-          
-          {/* Tab Kategori - Rata Tengah */}
-          <div className="flex items-center justify-center gap-6 md:gap-12 overflow-x-auto pb-4 w-full scrollbar-hide">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveTab(cat)}
-                className={`text-sm md:text-lg font-semibold transition-all duration-300 relative pb-2 whitespace-nowrap ${
-                  activeTab === cat 
-                  ? "text-[#ff6700] after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-[#ff6700]" 
-                  : "text-gray-400 hover:text-black"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+
+          {/* Tombol Urutkan — kontekstual hanya di halaman ini */}
+          <div className="relative group/sort flex-shrink-0">
+            <button className="flex items-center gap-2 bg-gray-100 px-4 py-2.5 rounded-full border border-gray-200 hover:border-[#ff6700] transition-colors text-gray-600 hover:text-[#ff6700] text-sm font-semibold">
+              <ArrowDownUp size={15} />
+              <span className="hidden md:block">
+                {sortOrder === "none" ? "Urutkan" : sortOrder === "asc" ? "Harga Terendah" : "Harga Tertinggi"}
+              </span>
+            </button>
+            <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover/sort:opacity-100 group-hover/sort:visible transition-all duration-200 z-50">
+              <div className="bg-white border border-gray-100 shadow-xl rounded-xl overflow-hidden w-44 flex flex-col py-1">
+                {(["none", "asc", "desc"] as const).map((val) => (
+                  <button
+                    key={val}
+                    onClick={() => setSortOrder(val)}
+                    className={`px-4 py-2.5 text-xs font-bold text-left transition-colors ${sortOrder === val ? "bg-orange-50 text-[#ff6700]" : "text-gray-600 hover:bg-gray-50"}`}
+                  >
+                    {val === "none" ? "Rekomendasi" : val === "asc" ? "Harga Terendah" : "Harga Tertinggi"}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Tab Kategori */}
+        <div className="flex items-center justify-center gap-6 md:gap-12 overflow-x-auto pb-4 w-full scrollbar-hide mb-12">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveTab(cat)}
+              className={`text-sm md:text-lg font-semibold transition-all duration-300 relative pb-2 whitespace-nowrap ${
+                activeTab === cat 
+                ? "text-[#ff6700] after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-[#ff6700]" 
+                : "text-gray-400 hover:text-black"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
   
         <div className="flex flex-col gap-6">
@@ -425,18 +463,26 @@ export default function ProductGrid({ initialProducts }: ProductGridProps) {
                </div>
 
                <div className="mt-8 flex gap-3 sticky bottom-0 bg-white pt-4 pb-2 z-10">
-                 <button 
-                   onClick={handleModalAddToCart} // Gunakan fungsi khusus Modal
-                   className="flex-1 bg-white border-2 border-gray-900 text-gray-900 font-bold py-4 rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
-                 >
-                   <ShoppingCart size={18} strokeWidth={2.5} /> + Keranjang
-                 </button>
-                 <button 
-                   onClick={handleModalBuyNow} // Gunakan fungsi khusus Modal
-                   className="flex-1 bg-gray-900 border-2 border-gray-900 text-white font-bold py-4 rounded-xl hover:bg-black transition-colors"
-                 >
-                   Beli Sekarang
-                 </button>
+                 {selectedProduct.stock <= 0 ? (
+                   <div className="flex-1 bg-red-50 border-2 border-red-200 text-red-500 font-bold py-4 rounded-xl text-center">
+                     ⚠ Stok Habis — Produk tidak tersedia
+                   </div>
+                 ) : (
+                   <>
+                   <button 
+                     onClick={handleModalAddToCart}
+                     className="flex-1 bg-white border-2 border-gray-900 text-gray-900 font-bold py-4 rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+                   >
+                     <ShoppingCart size={18} strokeWidth={2.5} /> + Keranjang
+                   </button>
+                   <button 
+                     onClick={handleModalBuyNow}
+                     className="flex-1 bg-gray-900 border-2 border-gray-900 text-white font-bold py-4 rounded-xl hover:bg-black transition-colors"
+                   >
+                     Beli Sekarang
+                   </button>
+                   </>
+                 )}
                </div>
             </div>
 

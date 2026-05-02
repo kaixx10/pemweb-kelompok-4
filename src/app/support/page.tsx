@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 const faqs = [
   {
     question: "Berapa lama garansi produk Xiaomi Store?",
-    answer: "Semua produk *smartphone* dan *smart home* resmi dari Xiaomi Store memiliki garansi pabrik selama 12-24 bulan tergantung jenis produk. Aksesoris dan *wearables* memiliki garansi 6 bulan. Anda bisa mengklaim garansi di seluruh Service Center resmi terdekat."
+    answer: "Semua produk smartphone dan smart home resmi dari Xiaomi Store memiliki garansi pabrik selama 12-24 bulan tergantung jenis produk. Aksesoris dan *wearables* memiliki garansi 6 bulan. Anda bisa mengklaim garansi di seluruh Service Center resmi terdekat."
   },
   {
     question: "Bagaimana cara melacak pesanan saya?",
@@ -179,27 +179,28 @@ export default function SupportPage() {
               
               {activeContactMethod === 'options' ? (
                 <div className="flex flex-col gap-3">
-                  <button 
-                    onClick={() => Swal.fire('Coming Soon', 'Fitur AI Live Chat sedang dalam pengembangan', 'info')}
+                  <Link 
+                    href="/chat"
                     className="w-full py-3 px-4 bg-[#ff6700] hover:bg-[#ff6700]/90 text-white rounded-xl font-bold transition-colors flex items-center justify-start gap-3 shadow-sm"
                   >
                     <div className="bg-white/20 p-2 rounded-lg flex-shrink-0"><MessageCircle size={20} /></div>
                     <div className="text-left">
-                      <p className="text-sm leading-tight">Live Chat (AI CS)</p>
-                      <p className="text-[10px] font-normal opacity-80 mt-0.5">(Segera Hadir / Nanti)</p>
+                      <p className="text-sm leading-tight">Live Chat</p>
+                      <p className="text-[10px] font-normal opacity-80 mt-0.5">Bicara langsung dengan CS kami</p>
                     </div>
-                  </button>
+                  </Link>
                   
-                  <button 
-                    onClick={() => Swal.fire('Coming Soon', 'Layanan WhatsApp sedang disiapkan', 'info')}
+                  <Link 
+                    href="https://wa.me/6282117236666"
+                    target="_blank"
                     className="w-full py-3 px-4 bg-[#25D366] hover:bg-[#1DA851] text-white rounded-xl font-bold transition-colors flex items-center justify-start gap-3 shadow-sm"
                   >
                     <div className="bg-white/20 p-2 rounded-lg flex-shrink-0"><PhoneCall size={20} /></div>
                     <div className="text-left">
                       <p className="text-sm leading-tight">WhatsApp</p>
-                      <p className="text-[10px] font-normal opacity-80 mt-0.5">(Segera Hadir / Nanti)</p>
+                      <p className="text-[10px] font-normal opacity-80 mt-0.5">Layanan Chat Resmi Xiaomi</p>
                     </div>
-                  </button>
+                  </Link>
 
                   <button 
                     onClick={() => setActiveContactMethod('email')}
@@ -275,11 +276,6 @@ export default function SupportPage() {
                   </form>
                 </div>
               )}
-
-              <div className="pt-4 border-t border-gray-100">
-                <p className="text-xs text-gray-500 font-medium mb-1">Admin Email (Otomatis Tembus Ke):</p>
-                <p className="text-sm font-bold text-gray-800">badarrahman1905@gmail.com</p>
-              </div>
             </div>
           </div>
         </div>

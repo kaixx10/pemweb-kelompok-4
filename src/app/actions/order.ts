@@ -15,14 +15,42 @@ export async function updateOrderStatus(orderId: string, newStatus: OrderStatus)
       throw new Error("Akses ditolak: Anda bukan Admin.");
     }
 
+    // Ambil status sebelumnya untuk cek apakah sudah pernah COMPLETED
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: { status: true }
+    });
+
+    if (!existingOrder) {
+      throw new Error("Order tidak ditemukan.");
+    }
+
+    // Kurangi stok jika status baru = COMPLETED dan sebelumnya BUKAN COMPLETED
+    if (newStatus === "COMPLETED" && existingOrder.status !== "COMPLETED") {
+      const orderItems = await prisma.orderItem.findMany({
+        where: { orderId },
+      });
+
+      for (const item of orderItems) {
+        await prisma.product.update({
+          where: { id: item.productId },
+          data: {
+            stock: { decrement: item.quantity },
+          },
+        });
+      }
+    }
+
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: { status: newStatus }
     });
 
     // Refresh halaman order dan dashboard agar omset terbaru muncul seketika
+    revalidatePath("/");
     revalidatePath("/admin");
     revalidatePath("/admin/orders");
+    revalidatePath("/admin/products");
 
     return { success: true, data: updatedOrder };
   } catch (error: any) {
@@ -35,7 +63,7 @@ export async function updateOrderStatus(orderId: string, newStatus: OrderStatus)
  * CHECKOUT ORDER (Dari User / Pembeli)
  * Menukar isi keranjang menjadi sebuah tagihan permanen.
  */
-export async function processCheckout(shippingAddress: string, items: any[], subtotal: number) {
+export async function processCheckout(shippingAddress: string, items: any[], subtotal: number, discountAmount: number = 0) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
@@ -44,9 +72,31 @@ export async function processCheckout(shippingAddress: string, items: any[], sub
 
     const userId = (session.user as any).id;
     
-    // Ongkos kirim tetap (Simulasi)
-    const shippingCost = 25000;
-    const finalTotal = subtotal + shippingCost;
+    // ====== CEK STOK SEBELUM CHECKOUT ======
+    for (const item of items) {
+      const productId = String(item.id).split('-')[0]; // Handle variant IDs
+      const product = await prisma.product.findUnique({
+        where: { id: productId },
+        select: { name: true, stock: true }
+      });
+
+      if (!product) {
+        return { success: false, error: `Produk tidak ditemukan.` };
+      }
+
+      if (product.stock < item.quantity) {
+        if (product.stock === 0) {
+          return { success: false, error: `Maaf, "${product.name}" sudah habis (Stok Habis).` };
+        }
+        return { success: false, error: `Stok "${product.name}" hanya tersisa ${product.stock} unit. Kurangi jumlah pesanan Anda.` };
+      }
+    }
+    // ========================================
+
+    // Ongkos kirim GRATIS (sesuai tampilan di checkout UI)
+    const shippingCost = 0;
+    // Hitung total SETELAH diskon kupon
+    const finalTotal = Math.max(0, subtotal - discountAmount) + shippingCost;
 
     // Buat nomor resi yang anti-bentrok 100% menggunakan Timestamp + Randomizer
     const randomHex = Math.random().toString(16).substr(2, 4).toUpperCase();

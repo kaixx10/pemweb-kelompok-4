@@ -3,7 +3,7 @@
 import Image from 'next/image';
 
 import { useCartStore } from '@/store/useCartStore';
-import { Trash2, Plus, Minus, Truck, ShieldCheck, CreditCard } from 'lucide-react';
+import { Trash2, Plus, Minus, Truck, ShieldCheck, CreditCard, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -12,8 +12,25 @@ import StepIndicator from '@/components/checkout/StepIndicator';
 export default function CartPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const { items, removeFromCart, updateCartQuantity, getTotalPrice, getTotalItems, toggleItemSelect, toggleAllSelect, getSelectedItemsCount } = useCartStore();
+  const { 
+    items, 
+    removeFromCart, 
+    updateCartQuantity, 
+    getTotalPrice, 
+    getDiscountAmount,
+    getTotalItems, 
+    toggleItemSelect, 
+    toggleAllSelect, 
+    getSelectedItemsCount,
+    appliedCoupon,
+    applyCoupon,
+    removeCoupon
+  } = useCartStore();
   
+  const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [couponError, setCouponError] = useState("");
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -26,7 +43,18 @@ export default function CartPage() {
     );
   }
 
+  const subtotal = items.filter(item => item.selected !== false).reduce((total, item) => {
+    let price = 0;
+    if (typeof item.price === 'number') {
+      price = item.price;
+    } else if (typeof item.price === 'string') {
+      price = parseInt((item.price as string).replace(/[^\d]/g, ''), 10) || 0;
+    }
+    return total + (price * (item.quantity || 1));
+  }, 0);
+
   const totalPrice = getTotalPrice();
+  const discountAmount = getDiscountAmount();
   const totalItems = getTotalItems();
   const checkedItemsCount = getSelectedItemsCount();
   const isAllSelected = items.length > 0 && items.every(item => item.selected !== false);
@@ -39,8 +67,79 @@ export default function CartPage() {
     }).format(price);
   };
 
+  const handleApplyCoupon = () => {
+    if (!couponCode.trim()) return;
+    const res = applyCoupon(couponCode);
+    if (res.success) {
+      setIsCouponModalOpen(false);
+      setCouponCode("");
+      setCouponError("");
+    } else {
+      setCouponError(res.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20 font-sans">
+      {/* Modal Kupon */}
+      {isCouponModalOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsCouponModalOpen(false)}></div>
+          <div className="bg-white rounded-3xl w-full max-w-md p-8 relative z-10 shadow-2xl animate-in zoom-in-95 duration-300">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Pasang Kupon</h2>
+            <p className="text-gray-500 text-sm mb-8 font-light tracking-wide leading-relaxed">
+              Punya kode promo? Masukkan di bawah ini untuk mendapatkan potongan harga spesial.
+            </p>
+            
+            <div className="flex flex-col gap-4">
+              <div className="relative">
+                <input 
+                  type="text" 
+                  placeholder="Contoh: XIAOMI20" 
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  className={`w-full border ${couponError ? 'border-red-400' : 'border-gray-200'} rounded-2xl py-4 px-6 outline-none focus:border-[#ff6700] transition-colors uppercase font-bold tracking-widest`}
+                />
+                {couponError && <p className="text-red-500 text-[11px] mt-2 ml-2 font-bold uppercase tracking-wider">{couponError}</p>}
+              </div>
+              
+              <div className="mt-2 mb-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Kupon Tersedia:</p>
+                <div className="flex flex-col gap-3">
+                  <button onClick={() => setCouponCode("XIAOMI20")} className="flex justify-between items-center text-left hover:bg-white p-2 rounded-lg transition-all group">
+                    <div>
+                      <span className="text-xs font-bold text-gray-800 tracking-wider">XIAOMI20</span>
+                      <p className="text-[10px] text-gray-400 uppercase font-bold tracking-tight mt-0.5">Diskon 20% tanpa minimum</p>
+                    </div>
+                    <ChevronRight size={14} className="text-gray-300 group-hover:text-[#ff6700]" />
+                  </button>
+                  <button onClick={() => setCouponCode("HEMAT50")} className="flex justify-between items-center text-left hover:bg-white p-2 rounded-lg transition-all group border-t border-gray-100 pt-3">
+                    <div>
+                      <span className="text-xs font-bold text-gray-800 tracking-wider">HEMAT50</span>
+                      <p className="text-[10px] text-gray-400 uppercase font-bold tracking-tight mt-0.5">Potongan Langsung Rp 50.000</p>
+                    </div>
+                    <ChevronRight size={14} className="text-gray-300 group-hover:text-[#ff6700]" />
+                  </button>
+                </div>
+              </div>
+
+              <button 
+                onClick={handleApplyCoupon}
+                className="w-full bg-[#ff6700] text-white py-4 rounded-2xl font-bold hover:bg-[#e05a00] transition-all shadow-lg shadow-orange-100"
+              >
+                Gunakan Kupon
+              </button>
+              <button 
+                onClick={() => setIsCouponModalOpen(false)}
+                className="w-full text-gray-400 py-2 text-sm font-bold hover:text-gray-600 transition-colors"
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="bg-white border-b border-gray-200">
         <StepIndicator currentStep={1} />
       </div>
@@ -153,8 +252,14 @@ export default function CartPage() {
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Subtotal</span>
-                    <span className="text-gray-900 font-medium">{formatPrice(totalPrice)}</span>
+                    <span className="text-gray-900 font-medium">{formatPrice(subtotal)}</span>
                   </div>
+                  {appliedCoupon && (
+                    <div className="flex justify-between text-sm animate-in slide-in-from-right-2 duration-300">
+                      <span className="text-[#ff6700] flex items-center gap-1 font-bold">Diskon ({appliedCoupon.code})</span>
+                      <span className="text-[#ff6700] font-bold">-{formatPrice(discountAmount)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500 flex items-center gap-1">Biaya pengiriman <span className="w-3 h-3 border border-gray-400 text-[8px] rounded-full flex items-center justify-center text-gray-500 cursor-help">i</span></span>
                     <span className="text-gray-900 font-medium">Gratis</span>
@@ -163,10 +268,28 @@ export default function CartPage() {
 
                 {/* Kupon */}
                 <div className="border-t border-b border-gray-100 py-4 mb-6">
-                  <div className="flex justify-between items-center bg-orange-50/50 p-3 rounded-lg border border-orange-100 cursor-pointer">
-                    <span className="text-sm font-bold text-gray-800 flex items-center gap-2">🎟️ Kupon</span>
-                    <span className="text-[11px] font-bold text-[#ff6700]">Tersedia &gt;</span>
-                  </div>
+                  {!appliedCoupon ? (
+                    <div 
+                      onClick={() => setIsCouponModalOpen(true)}
+                      className="flex justify-between items-center bg-orange-50/50 p-4 rounded-xl border border-orange-100 cursor-pointer hover:bg-orange-100/50 transition-all active:scale-[0.98]"
+                    >
+                      <span className="text-sm font-bold text-gray-800 flex items-center gap-2">🎟️ Kupon</span>
+                      <span className="text-[11px] font-bold text-[#ff6700] uppercase tracking-widest">Gunakan &gt;</span>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100 group">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Kupon Terpasang</span>
+                        <span className="text-sm font-bold text-gray-800">{appliedCoupon.code}</span>
+                      </div>
+                      <button 
+                        onClick={() => removeCoupon()}
+                        className="text-[11px] font-bold text-red-500 hover:text-red-600 uppercase tracking-widest"
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <button 

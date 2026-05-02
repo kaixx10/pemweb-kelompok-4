@@ -7,6 +7,23 @@ import { OrderStatus } from "@prisma/client";
 export async function syncOrderWithMidtrans(orderId: string, forceSuccess: boolean = false, cancel: boolean = false) {
   try {
     if (forceSuccess) {
+      // Ambil semua item dari order ini
+      const orderItems = await prisma.orderItem.findMany({
+        where: { orderId },
+      });
+
+      // Kurangi stok untuk setiap produk yang dibeli
+      for (const item of orderItems) {
+        await prisma.product.update({
+          where: { id: item.productId },
+          data: {
+            stock: {
+              decrement: item.quantity,
+            },
+          },
+        });
+      }
+
       await prisma.order.update({
         where: { id: orderId },
         data: {
@@ -14,8 +31,10 @@ export async function syncOrderWithMidtrans(orderId: string, forceSuccess: boole
           paymentStatus: "settlement"
         }
       });
+      revalidatePath("/");
       revalidatePath("/profile/orders");
       revalidatePath("/admin/orders");
+      revalidatePath("/admin/products");
       return { success: true, status: "COMPLETED" };
     }
 

@@ -3,32 +3,57 @@
 import { useSession } from "next-auth/react";
 import { ArrowLeft, Sparkles, HeartHandshake, ShieldCheck, TicketPercent, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { getAvailableCoupons, claimCoupon, seedCoupons } from "@/app/actions/coupon";
 
 export default function BenefitsPage() {
   const { data: session } = useSession();
   const user = session?.user as any;
-  const [claimed, setClaimed] = useState<string[]>([]);
+  const [coupons, setCoupons] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleClaim = (id: string) => {
-    if (claimed.includes(id)) return;
+  const fetchCoupons = async () => {
+    setLoading(true);
+    // Jalankan seed sekali untuk memastikan data ada (opsional jika sudah ada admin panel)
+    await seedCoupons();
     
-    setClaimed([...claimed, id]);
-    Swal.fire({
-      icon: "success",
-      title: "Kupon Berhasil Diklaim!",
-      text: "Kupon telah masuk ke brankas akun Anda dan siap digunakan saat Checkout.",
-      confirmButtonColor: "#ff6700",
-      confirmButtonText: "Mantap",
-    });
+    const res = await getAvailableCoupons();
+    if (res.success) {
+      setCoupons(res.data || []);
+    }
+    setLoading(false);
   };
 
-  const coupons = [
-    { id: "c1", title: "Gratis Ongkir Super", desc: "Potongan ongkir s/d Rp 50.000 ke seluruh Indonesia", exp: "7 Hari Lagi", type: "orange" },
-    { id: "c2", title: "Diskon 15% Aksesoris", desc: "Maksimal potongan Rp 100.000 khusus pembelian aksesoris", exp: "Akhir Bulan", type: "blue" },
-    { id: "c3", title: "Cashback Xiaomi Points 20%", desc: "Dapatkan poin ganda untuk pembelian Smart TV", exp: "Besok Habis", type: "purple" },
-  ];
+  useEffect(() => {
+    if (session) {
+      fetchCoupons();
+    }
+  }, [session]);
+
+  const handleClaim = async (id: string) => {
+    const res = await claimCoupon(id);
+    
+    if (res.success) {
+      // Refresh data lokal agar tombol berubah jadi "Diklaim"
+      await fetchCoupons();
+      
+      Swal.fire({
+        icon: "success",
+        title: "Kupon Berhasil Diklaim!",
+        text: "Kupon telah masuk ke brankas akun Anda dan siap digunakan saat Checkout.",
+        confirmButtonColor: "#ff6700",
+        confirmButtonText: "Mantap",
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Klaim",
+        text: res.error || "Terjadi kesalahan.",
+        confirmButtonColor: "#ff6700",
+      });
+    }
+  };
 
   return (
     <main className="min-h-screen bg-gray-50 pb-20 pt-28 font-sans">
@@ -119,45 +144,56 @@ export default function BenefitsPage() {
           Kupon Siap Klaim
         </h3>
         <div className="space-y-4">
-          {coupons.map((coupon) => (
-            <div key={coupon.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex relative">
-              <div className={`w-32 flex flex-col items-center justify-center text-white p-4 border-r border-dashed border-gray-200 relative
-                ${coupon.type === 'orange' ? 'bg-gradient-to-br from-[#ff6700] to-orange-600' : 
-                  coupon.type === 'blue' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 
-                  'bg-gradient-to-br from-purple-500 to-pink-600'}`}>
-                {/* Potongan Setengah Lingkaran Kupon */}
-                <div className="absolute top-0 -right-2.5 w-5 h-5 bg-white rounded-full -translate-y-1/2"></div>
-                <div className="absolute bottom-0 -right-2.5 w-5 h-5 bg-white rounded-full translate-y-1/2"></div>
-                
-                <TicketPercent size={32} className="opacity-80 mb-2" />
-                <span className="font-black text-lg text-center leading-tight">XIAOMI<br/>PERKS</span>
-              </div>
-              <div className="p-5 flex-1 flex flex-col justify-center bg-white relative">
-                <div className="flex justify-between items-start mb-1">
-                  <h4 className="font-bold text-gray-900">{coupon.title}</h4>
-                  <span className="text-[10px] font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full">{coupon.exp}</span>
+          {loading ? (
+            <div className="py-20 text-center text-gray-400 font-medium">Memuat kupon spesial untuk Anda...</div>
+          ) : coupons.length > 0 ? (
+            coupons.map((coupon, idx) => {
+              const colors = ['orange', 'blue', 'purple'];
+              const type = colors[idx % colors.length];
+              
+              return (
+                <div key={coupon.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex relative animate-in fade-in slide-in-from-bottom-2 duration-300" style={{ animationDelay: `${idx * 100}ms` }}>
+                  <div className={`w-32 flex flex-col items-center justify-center text-white p-4 border-r border-dashed border-gray-200 relative
+                    ${type === 'orange' ? 'bg-gradient-to-br from-[#ff6700] to-orange-600' : 
+                      type === 'blue' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 
+                      'bg-gradient-to-br from-purple-500 to-pink-600'}`}>
+                    
+                    <div className="absolute top-0 -right-2.5 w-5 h-5 bg-white rounded-full -translate-y-1/2"></div>
+                    <div className="absolute bottom-0 -right-2.5 w-5 h-5 bg-white rounded-full translate-y-1/2"></div>
+                    
+                    <TicketPercent size={32} className="opacity-80 mb-2" />
+                    <span className="font-black text-lg text-center leading-tight">XIAOMI<br/>PERKS</span>
+                  </div>
+                  <div className="p-5 flex-1 flex flex-col justify-center bg-white relative">
+                    <div className="flex justify-between items-start mb-1">
+                      <h4 className="font-bold text-gray-900">{coupon.code}</h4>
+                      <span className="text-[10px] font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full">Berlaku</span>
+                    </div>
+                    <p className="text-sm text-gray-500 mb-4 line-clamp-2">{coupon.description}</p>
+                    <div className="flex justify-end mt-auto">
+                      {coupon.isClaimed ? (
+                        <button disabled className="bg-gray-100 text-gray-400 font-bold py-2 px-5 rounded-full text-xs flex items-center gap-1">
+                          <CheckCircle2 size={14} /> Diklaim
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={() => handleClaim(coupon.id)}
+                          className={`font-bold py-2 px-6 rounded-full text-xs shadow-sm transition-transform hover:scale-105
+                          ${type === 'orange' ? 'bg-orange-50 text-[#ff6700] border border-orange-200' : 
+                            type === 'blue' ? 'bg-blue-50 text-blue-600 border border-blue-200' : 
+                            'bg-purple-50 text-purple-600 border border-purple-200'}`}
+                        >
+                          Klaim Sekarang
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-500 mb-4 line-clamp-2">{coupon.desc}</p>
-                <div className="flex justify-end mt-auto">
-                  {claimed.includes(coupon.id) ? (
-                    <button disabled className="bg-gray-100 text-gray-400 font-bold py-2 px-5 rounded-full text-xs flex items-center gap-1">
-                      <CheckCircle2 size={14} /> Diklaim
-                    </button>
-                  ) : (
-                    <button 
-                      onClick={() => handleClaim(coupon.id)}
-                      className={`font-bold py-2 px-6 rounded-full text-xs shadow-sm transition-transform hover:scale-105
-                      ${coupon.type === 'orange' ? 'bg-orange-50 text-[#ff6700] border border-orange-200' : 
-                        coupon.type === 'blue' ? 'bg-blue-50 text-blue-600 border border-blue-200' : 
-                        'bg-purple-50 text-purple-600 border border-purple-200'}`}
-                    >
-                      Klaim Sekarang
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+              );
+            })
+          ) : (
+            <div className="py-20 text-center text-gray-400 font-medium">Belum ada kupon yang tersedia saat ini.</div>
+          )}
         </div>
 
       </div>

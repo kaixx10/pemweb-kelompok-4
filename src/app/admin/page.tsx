@@ -26,6 +26,36 @@ export default async function AdminDashboard() {
     take: 3,
     orderBy: { createdAt: 'desc' },
   });
+  // 5. Grafik Sales Analytics — Data 10 bulan terakhir
+  const now = new Date();
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  const monthlyData: { label: string; total: number }[] = [];
+
+  for (let i = 9; i >= 0; i--) {
+    const startDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const endDate = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
+
+    const agg = await prisma.order.aggregate({
+      _sum: { total: true },
+      where: {
+        status: { in: ["PAID", "SHIPPED", "COMPLETED"] },
+        createdAt: { gte: startDate, lte: endDate },
+      },
+    });
+
+    monthlyData.push({
+      label: monthNames[startDate.getMonth()],
+      total: agg._sum.total ? Number(agg._sum.total) : 0,
+    });
+  }
+
+  const maxTotal = Math.max(...monthlyData.map(d => d.total), 1);
+
+  const formatShort = (n: number) => {
+    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}jt`;
+    if (n >= 1_000) return `${(n / 1_000).toFixed(0)}rb`;
+    return n.toString();
+  };
 
   return (
     <div className="w-full flex justify-center">
@@ -84,23 +114,41 @@ export default async function AdminDashboard() {
           <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col">
             <div className="mb-6">
               <h3 className="font-bold text-gray-800">Sales Analytics</h3>
-              <p className="text-xs text-gray-500 mt-1">Grafik Statis (Akan diupdate dengan chart JS nantinya)</p>
+              <p className="text-xs text-gray-500 mt-1">Pendapatan bulanan dari pesanan Selesai/Dibayar (10 bulan terakhir)</p>
             </div>
             
-            <div className="flex-1 w-full flex items-end gap-2 md:gap-4 h-64 pt-8 border-b border-gray-100 relative">
+            <div className="flex-1 w-full flex items-end gap-1 md:gap-3 h-64 pt-4 pb-6 border-b border-gray-100 relative">
               <div className="absolute left-0 right-0 top-0 border-t border-gray-50"></div>
               <div className="absolute left-0 right-0 top-1/4 border-t border-gray-50"></div>
               <div className="absolute left-0 right-0 top-2/4 border-t border-gray-50"></div>
               <div className="absolute left-0 right-0 top-3/4 border-t border-gray-50"></div>
               
-              {[40, 65, 30, 85, 55, 90, 45, 75, 40, 95].map((height, i) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-2 group z-10">
-                  <div 
-                    className="w-full max-w-[2rem] bg-gradient-to-t from-[#ff6700] to-orange-300 rounded-t-sm transition-all duration-300 group-hover:opacity-80 relative"
-                    style={{ height: `${height}%` }}
-                  ></div>
-                </div>
-              ))}
+              {monthlyData.map((d, i) => {
+                const heightPct = maxTotal > 0 ? Math.max((d.total / maxTotal) * 85, d.total > 0 ? 10 : 0) : 0;
+                return (
+                  <div key={i} className="flex-1 flex flex-col items-center justify-end group z-10 h-full">
+                    <div className="flex-1 flex flex-col items-center justify-end w-full">
+                      {d.total > 0 && (
+                        <span className="text-[8px] font-bold text-[#ff6700] mb-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                          {formatShort(d.total)}
+                        </span>
+                      )}
+                      <div 
+                        className={`w-full max-w-[28px] rounded-t-md transition-all duration-500 group-hover:scale-x-110 ${
+                          d.total > 0 
+                            ? 'bg-gradient-to-t from-[#ff6700] to-orange-300 shadow-sm shadow-orange-100' 
+                            : 'bg-gray-100'
+                        }`}
+                        style={{ 
+                          height: d.total > 0 ? `${heightPct}%` : '4px',
+                          minHeight: d.total > 0 ? '20px' : '4px'
+                        }}
+                      ></div>
+                    </div>
+                    <span className="text-[10px] text-gray-400 font-bold mt-2">{d.label}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

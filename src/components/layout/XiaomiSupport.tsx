@@ -40,7 +40,9 @@ export default function XiaomiSupport() {
     } else if (title === "Alamat") {
       router.push("/profile/address");
     } else if (title === "WhatsApp") {
-      router.push("https://api.whatsapp.com/send?phone=6282117236765");
+      window.open("https://wa.me/6282117236666", "_blank");
+    } else if (title === "Dukungan Pelanggan") {
+      router.push("/chat");
     } else {
       Swal.fire({
         icon: "info",

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, Users, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Users, Settings, LogOut, MessageCircle } from "lucide-react";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -12,6 +12,7 @@ export default function Sidebar() {
     { name: "Products", icon: <Package size={20} />, path: "/admin/products" },
     { name: "Orders", icon: <ShoppingCart size={20} />, path: "/admin/orders" },
     { name: "Customers", icon: <Users size={20} />, path: "/admin/users" },
+    { name: "Live Chat", icon: <MessageCircle size={20} />, path: "/admin/chat" },
   ];
 
   return (

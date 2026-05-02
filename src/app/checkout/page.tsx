@@ -17,14 +17,14 @@ import { syncOrderWithMidtrans } from "@/app/actions/syncOrder";
 export default function CheckoutPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const { items, getTotalPrice, removeSelectedItems } = useCartStore();
+  const { items, getTotalPrice, getDiscountAmount, appliedCoupon, removeSelectedItems } = useCartStore();
   const [loading, setLoading] = useState(false);
 
   // Saring hanya barang yang tercentang/terpilih
   const selectedItems = items.filter(item => item.selected !== false);
 
   // Form State yang presisi seperti Xiaomi
-  const [address, setAddress] = useState(""); // Alamat di Xiaomi adalah nama jalan + detail
+  const [address, setAddress] = useState(""); 
   const [firstName, setFirstName] = useState("");
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
@@ -33,9 +33,20 @@ export default function CheckoutPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
 
-  const subtotal = getTotalPrice();
-  const shippingCost = 0; // Karena di screenshot tulisannya Gratis/Tidak ada
-  const finalTotal = subtotal + shippingCost;
+  // HITUNG HARGA DINAMIS
+  const subtotal = selectedItems.reduce((total, item) => {
+    let price = 0;
+    if (typeof item.price === 'number') {
+      price = item.price;
+    } else if (typeof item.price === 'string') {
+      price = parseInt((item.price as string).replace(/[^\d]/g, ''), 10) || 0;
+    }
+    return total + (price * (item.quantity || 1));
+  }, 0);
+  
+  const discountAmount = getDiscountAmount();
+  const shippingCost = 0; 
+  const finalTotal = Math.max(0, subtotal - discountAmount + shippingCost);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -101,7 +112,7 @@ export default function CheckoutPage() {
     const fullAddress = `${firstName}, ${street}, ${address}, Distrik: ${district}, Kota: ${city}, Provinsi: ${province}, Telp: ${phone}, Email: ${email}`;
     
     setLoading(true);
-    const res = await processCheckout(fullAddress, selectedItems, subtotal);
+    const res = await processCheckout(fullAddress, selectedItems, subtotal, discountAmount);
     setLoading(false);
 
     if (res.success && res.snapToken) {
@@ -350,26 +361,44 @@ export default function CheckoutPage() {
 
               {/* Rincian Harga */}
               <div className="border-t border-gray-100 pt-5 space-y-4 mb-6">
-                <div className="flex justify-between items-end mb-2">
+                <div className="flex justify-between items-end mb-2 border-b border-gray-100 pb-4">
                   <span className="text-gray-900 font-bold text-lg">Total</span>
-                  <span className="text-xl font-bold text-[#ff6700]">{formatIDR(finalTotal)}</span>
+                  <div className="text-right">
+                    <span className="text-xl font-bold text-[#ff6700] block">{formatIDR(finalTotal)}</span>
+                    {discountAmount > 0 && <span className="text-[10px] text-gray-400 font-medium italic">Hemat {formatIDR(discountAmount)} dengan kupon</span>}
+                  </div>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Subtotal</span>
                   <span className="text-gray-900">{formatIDR(subtotal)}</span>
                 </div>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-sm animate-in slide-in-from-right-2 duration-300">
+                    <span className="text-[#ff6700] font-bold">Diskon ({appliedCoupon?.code})</span>
+                    <span className="text-[#ff6700] font-bold">-{formatIDR(discountAmount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500 flex items-center gap-1">Biaya pengiriman <span className="w-3 h-3 border border-gray-400 text-[8px] rounded-full flex items-center justify-center text-gray-500 cursor-help">i</span></span>
-                  <span className="text-gray-900">Tidak ada pengiriman dipilih</span>
+                  <span className="text-gray-900">Gratis</span>
                 </div>
               </div>
 
               {/* Kupon */}
               <div className="border-t border-b border-gray-100 py-5 mb-5 relative">
                 <span className="text-sm font-bold text-gray-900">Kupon</span>
-                <span className="absolute right-0 top-5 text-sm font-medium text-[#ff6700] cursor-pointer hover:underline">Gunakan kupon</span>
-                <p className="text-xs text-[#ff6700] font-medium mt-1">0 kupon tersedia</p>
-                <p className="text-xs text-gray-500 mt-0.5">Tidak ada kupon yang digunakan</p>
+                {!appliedCoupon ? (
+                  <>
+                    <span onClick={() => router.push('/cart')} className="absolute right-0 top-5 text-sm font-medium text-[#ff6700] cursor-pointer hover:underline">Gunakan kupon</span>
+                    <p className="text-xs text-gray-400 font-medium mt-1">Gunakan kupon di keranjang belanja</p>
+                  </>
+                ) : (
+                  <>
+                    <span onClick={() => router.push('/cart')} className="absolute right-0 top-5 text-sm font-medium text-gray-400 cursor-pointer hover:underline">Ubah</span>
+                    <p className="text-xs text-[#ff6700] font-bold mt-1">Terpasang: {appliedCoupon.code}</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5 italic">Potongan harga berhasil diterapkan</p>
+                  </>
+                )}
               </div>
 
               <button

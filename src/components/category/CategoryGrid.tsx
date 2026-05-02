@@ -56,7 +56,8 @@ export default function CategoryGrid({ initialProducts }: CategoryGridProps) {
       rawPrice: Number(p.basePrice), 
       img: emoji,
       desc: p.description,
-      variants: p.variants || []
+      variants: p.variants || [],
+      stock: p.stock ?? 0,
     };
   });
 
@@ -116,8 +117,13 @@ export default function CategoryGrid({ initialProducts }: CategoryGridProps) {
   return (
     <div className="w-full max-w-[1800px] mx-auto px-2 md:px-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
-        {products.map((product) => (
-          <div key={product.id} className="bg-white flex flex-col items-center pt-16 pb-8 px-4 md:px-8 text-center hover:shadow-2xl transition-all duration-300 border border-gray-100">
+        {products.map((product) => {
+          const outOfStock = product.stock <= 0;
+          return (
+          <div key={product.id} className={`bg-white flex flex-col items-center pt-16 pb-8 px-4 md:px-8 text-center hover:shadow-2xl transition-all duration-300 border border-gray-100 relative ${outOfStock ? 'opacity-70' : ''}`}>
+            {outOfStock && (
+              <span className="absolute top-6 left-6 bg-red-500 text-white text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider z-20">Stok Habis</span>
+            )}
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-3">
               {product.name}
             </h2>
@@ -126,21 +132,29 @@ export default function CategoryGrid({ initialProducts }: CategoryGridProps) {
             </p>
             
             <div className="flex gap-3 mb-10 z-10 relative">
-              <button 
-                onClick={() => openProductModal(product)}
-                className="bg-[#191919] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-black transition-colors"
-              >
-                Beli sekarang
-              </button>
-              <button 
-                onClick={() => openProductModal(product)}
-                className="bg-transparent border border-gray-400 text-gray-800 px-6 py-2.5 rounded-full font-bold text-sm hover:border-gray-800 transition-colors"
-              >
-                Learn More
-              </button>
+              {outOfStock ? (
+                <span className="bg-gray-200 text-gray-400 px-6 py-2.5 rounded-full font-bold text-sm cursor-not-allowed">
+                  Stok Habis
+                </span>
+              ) : (
+                <>
+                <button 
+                  onClick={() => openProductModal(product)}
+                  className="bg-[#191919] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-black transition-colors"
+                >
+                  Beli sekarang
+                </button>
+                <button 
+                  onClick={() => openProductModal(product)}
+                  className="bg-transparent border border-gray-400 text-gray-800 px-6 py-2.5 rounded-full font-bold text-sm hover:border-gray-800 transition-colors"
+                >
+                  Learn More
+                </button>
+                </>
+              )}
             </div>
 
-            <div className="w-full max-w-[300px] aspect-square flex items-center justify-center relative mt-auto group">
+            <div className={`w-full max-w-[300px] aspect-square flex items-center justify-center relative mt-auto group ${outOfStock ? 'grayscale' : ''}`}>
               {product.img && (product.img.startsWith('http') || product.img.startsWith('/')) ? (
                 <Image 
                   src={product.img} 
@@ -154,7 +168,8 @@ export default function CategoryGrid({ initialProducts }: CategoryGridProps) {
               )}
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* QUICK VIEW MODAL */}
@@ -228,18 +243,26 @@ export default function CategoryGrid({ initialProducts }: CategoryGridProps) {
                </div>
 
                <div className="mt-8 flex gap-3 sticky bottom-0 bg-white pt-4 pb-2 z-10">
-                 <button 
-                   onClick={handleModalAddToCart}
-                   className="flex-1 bg-white border-2 border-gray-900 text-gray-900 font-bold py-4 rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
-                 >
-                   <ShoppingCart size={18} strokeWidth={2.5} /> + Keranjang
-                 </button>
-                 <button 
-                   onClick={handleModalBuyNow}
-                   className="flex-1 bg-gray-900 border-2 border-gray-900 text-white font-bold py-4 rounded-xl hover:bg-black transition-colors"
-                 >
-                   Beli Sekarang
-                 </button>
+                 {selectedProduct.stock <= 0 ? (
+                   <div className="flex-1 bg-red-50 border-2 border-red-200 text-red-500 font-bold py-4 rounded-xl text-center">
+                     ⚠ Stok Habis — Produk tidak tersedia
+                   </div>
+                 ) : (
+                   <>
+                   <button 
+                     onClick={handleModalAddToCart}
+                     className="flex-1 bg-white border-2 border-gray-900 text-gray-900 font-bold py-4 rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+                   >
+                     <ShoppingCart size={18} strokeWidth={2.5} /> + Keranjang
+                   </button>
+                   <button 
+                     onClick={handleModalBuyNow}
+                     className="flex-1 bg-gray-900 border-2 border-gray-900 text-white font-bold py-4 rounded-xl hover:bg-black transition-colors"
+                   >
+                     Beli Sekarang
+                   </button>
+                   </>
+                 )}
                </div>
             </div>
           </div>

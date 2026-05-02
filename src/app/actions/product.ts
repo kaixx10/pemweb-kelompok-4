@@ -300,3 +300,41 @@ export async function updateProductWithVariants(id: string, formData: any, varia
     return { success: false, error: error.message || "Gagal memperbarui produk" };
   }
 }
+
+/**
+ * SEARCH PRODUCTS
+ * Fungsi untuk mencari produk berdasarkan nama atau deskripsi (Fitur Baru)
+ */
+export async function searchProducts(query: string) {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        OR: [
+          { name: { contains: query } },
+          { description: { contains: query } },
+          { slug: { contains: query } }
+        ]
+      },
+      include: {
+        category: true,
+        variants: true
+      },
+      orderBy: { updatedAt: 'desc' }
+    });
+
+    const safeProducts = products.map(p => ({
+      ...p,
+      basePrice: Number(p.basePrice),
+      categoryName: p.category?.name || "Uncategorized",
+      variants: p.variants.map(v => ({
+        ...v,
+        price: Number(v.price)
+      }))
+    }));
+
+    return { success: true, data: safeProducts };
+  } catch (error: any) {
+    console.error("Gagal mencari produk:", error);
+    return { success: false, error: "Gagal memproses pencarian." };
+  }
+}
