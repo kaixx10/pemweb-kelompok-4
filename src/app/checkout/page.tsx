@@ -136,7 +136,7 @@ export default function CheckoutPage() {
             });
           },
           onPending: async function (result: any) {
-            await syncOrderWithMidtrans(res.orderId);
+            await syncOrderWithMidtrans(res.orderId || "");
             Swal.fire({
               icon: "info",
               title: "Menunggu Pembayaran",
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
             });
           },
           onClose: async function () {
-            const sync = await syncOrderWithMidtrans(res.orderId);
+            const sync = await syncOrderWithMidtrans(res.orderId || "");
             if (sync.success && sync.status === "COMPLETED") {
                Swal.fire({
                  icon: "success",

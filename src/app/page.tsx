@@ -1,6 +1,7 @@
 import HeroNeo from "@/components/home/HeroNeo";
 import ProductGrid from "@/components/home/ProductGrid";
 import { prisma } from "@/lib/prisma";
+import { Suspense } from "react";
 
 export default async function Home() {
   // 1. Ambil produk dari database
@@ -25,7 +26,7 @@ export default async function Home() {
       price: finalPriceNumber,     
       
       categoryName: p.category?.name || "", 
-    variants: p.variants?.map((v) => ({
+    variants: p.variants?.map((v: any) => ({
       ...v,
       price: v.price ? parseFloat(v.price.toString()) : 0
       })) || []
@@ -36,7 +37,9 @@ export default async function Home() {
     <main className="min-h-screen bg-[var(--background)] flex flex-col font-sans">
       <div className="flex-1 w-full relative pb-16">
         <HeroNeo />
-        <ProductGrid initialProducts={safeProducts} />
+        <Suspense fallback={<div className="w-full h-96 bg-gray-100 animate-pulse" />}>
+          <ProductGrid initialProducts={safeProducts} />
+        </Suspense>
       </div>
     </main>
   );

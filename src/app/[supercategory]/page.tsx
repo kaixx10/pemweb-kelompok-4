@@ -14,12 +14,12 @@ const SUPER_CATEGORIES: Record<string, { title: string, slugs: string[], desc: s
   wearables: {
     title: "Wearables & Audio",
     desc: "Gaya hidup sehat dengan pemantau cerdas di setiap metrik tubuh Anda.",
-    slugs: ["smart-watches"] // berdasarkan seding data
+    slugs: ["smart-watches"]
   },
   lifestyle: {
     title: "Lifestyle",
     desc: "Alat-alat fungsional untuk menunjang aktivitas luar ruangan, kebugaran, dan keseharian.",
-    slugs: ["chargings", "outdoors", "offices", "personal-care", "health-fitness", "tools"]
+    slugs: ["lifestyle", "personal-care", "health-fitness", "tools"]
   },
   "smart-home": {
     title: "Smart Home",

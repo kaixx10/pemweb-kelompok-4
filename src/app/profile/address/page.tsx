@@ -60,9 +60,9 @@ export default function AddressPage() {
           ...session,
           user: {
             ...session?.user,
-            address: result.data.address,
-            latitude: result.data.latitude,
-            longitude: result.data.longitude
+            address: result.data?.address,
+            latitude: result.data?.latitude,
+            longitude: result.data?.longitude
           }
         });
 

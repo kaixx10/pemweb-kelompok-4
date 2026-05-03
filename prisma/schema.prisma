@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Category {
-  id       String    @id
+  id       String    @id @default(cuid())
   name     String
   slug     String    @unique(map: "Category_slug_key")
   products Product[]

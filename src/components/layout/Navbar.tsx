@@ -41,6 +41,8 @@ export default function Navbar() {
   if (pathname.startsWith('/admin')) return null;
 
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [activeSeries, setActiveSeries] = useState<'xiaomi' | 'redmi' | 'poco'>('xiaomi');
+  const [activeWearable, setActiveWearable] = useState<'watches' | 'bands' | 'tws' | 'glasses' | 'tags'>('watches');
   const [menuHeight, setMenuHeight] = useState<number>(0);
   const [mounted, setMounted] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -391,89 +393,222 @@ export default function Navbar() {
                       </ul>
                    </div>
                </div>
-               <div className="w-[40%] flex flex-col pl-8 border-l border-gray-100">
+              <div className="w-[40%] flex flex-col pl-8 border-l border-gray-100">
                   <h4 className="font-bold text-gray-900 mb-4 text-sm hover:text-black cursor-pointer flex justify-between group/link transition-colors">
                      Pilihan Harian <span className="text-gray-400 group-hover/link:text-black transition-colors">&gt;</span>
                   </h4>
                   <div className="grid grid-cols-2 grid-rows-2 gap-4 flex-1">
+                     {/* POCO C85 */}
                      <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p220'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="/uploads/products/neo-product-1776054940909-513469930.webp" alt="POCO C85" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
+                        <img src="/uploads/products/neo-product-1777783997053-31616074.webp" alt="POCO C85" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">POCO C85</span>
                      </div>
-                     <div className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="https://i02.appmifile.com/mi-com-product/fly-birds/poco-f6/pc/0ee720f4c000bd9337ff553a1a9cb0b2.png" alt="POCO F7" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
+                     
+                     {/* POCO F7 */}
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p349'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                        <img src="/uploads/products/neo-product-1777782925684-829324348.webp" alt="POCO F7" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">POCO F7</span>
                      </div>
-                     <div className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="https://i02.appmifile.com/mi-com-product/fly-birds/poco-m6-pro/pc/f4640ebc77d54d92cd97034cf9b0eb23.png" alt="POCO M7" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
+                     
+                     {/* POCO M7 */}
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p5058'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                        <img src="/uploads/products/neo-product-1777782999400-465542448.webp" alt="POCO M7" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">POCO M7</span>
                      </div>
-                     <div className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="https://i02.appmifile.com/mi-com-product/fly-birds/poco-x6-pro/pc/8ba1116c4c66ff97f5fb5df3f31fba8b.png" alt="POCO X7 Pro 5G" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
+                     
+                     {/* POCO X7 Pro 5G */}
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p4666'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                        <img src="/uploads/products/neo-product-1777782854612-719125560.webp" alt="POCO X7 Pro 5G" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">POCO X7 Pro 5G</span>
                      </div>
                   </div>
                </div>
             </div>
 
-            {/* ====== MOBILE CONTENT ====== */}
-            <div 
-              ref={el => { contentRefs.current['mobile'] = el }}
-              className={`flex gap-8 absolute top-10 left-6 lg:left-10 right-6 lg:right-10 ${activeMenu === 'mobile' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 -z-10 pointer-events-none invisible'}`}
-            >
-               <div className="flex flex-col gap-6 w-[20%] pr-8">
-                  <div>
-                    <h4 className="font-bold text-black text-sm mb-3">Phones</h4>
-                    <ul className="flex flex-col gap-3 text-[13px] text-gray-600 font-medium pl-2">
-                      <li className="text-black cursor-pointer hover:translate-x-1 transition-transform">Xiaomi Series</li>
-                      <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">REDMI Series</li>
-                      <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">POCO Phones</li>
-                    </ul>
-                  </div>
-                  <h4 className="font-bold text-gray-900 text-sm hover:text-black cursor-pointer transition-colors">Tablets</h4>
-               </div>
-               <div className="w-[80%] flex gap-4">
-                  <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p3341'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer relative border border-gray-100">
-                     <span className="absolute top-4 left-4 text-[10px] font-bold text-gray-800 bg-yellow-100 px-2 py-0.5 rounded-sm">Baru</span>
-                     <img src="/uploads/products/neo-product-1776053218365-355376790.webp" alt="Xiaomi 17" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
-                     <span className="text-xs font-semibold text-gray-800 text-center">Xiaomi 17</span>
-                  </div>
-                  <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p1921'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer relative border border-gray-100">
-                     <span className="absolute top-4 left-4 text-[10px] font-bold text-gray-800 bg-yellow-100 px-2 py-0.5 rounded-sm">Baru</span>
-                     <img src="/uploads/products/neo-product-1776051074818-257222761.webp" alt="Xiaomi 17 Ultra" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
-                     <span className="text-xs font-semibold text-gray-800 text-center">Xiaomi 17 Ultra</span>
-                  </div>
-                  <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p2290'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer relative border border-gray-100">
-                     <img src="/uploads/products/neo-product-1776053817229-827613014.webp" alt="Xiaomi 15T Pro" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
-                     <span className="text-xs font-semibold text-gray-800 text-center">Xiaomi 15T Pro</span>
-                  </div>
-               </div>
-            </div>
+          {/* ====== MOBILE CONTENT ====== */}
+<div 
+  ref={el => { contentRefs.current['mobile'] = el }}
+  className={`flex gap-8 absolute top-10 left-6 lg:left-10 right-6 lg:right-10 ${activeMenu === 'mobile' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 -z-10 pointer-events-none invisible'}`}
+>
+   {/* SISI KIRI: DAFTAR SERI */}
+   <div className="flex flex-col gap-6 w-[20%] pr-8">
+      <div>
+        <h4 className="font-bold text-black text-sm mb-3">Phones</h4>
+        <ul className="flex flex-col gap-3 text-[13px] text-gray-600 font-medium pl-2">
+          <li 
+            onMouseEnter={() => setActiveSeries('xiaomi')}
+            className={`cursor-pointer hover:translate-x-1 transition-transform ${activeSeries === 'xiaomi' ? 'text-[#ff6700] font-bold' : ''}`}
+          >
+            Xiaomi Series
+          </li>
+          <li 
+            onMouseEnter={() => setActiveSeries('redmi')}
+            className={`cursor-pointer hover:translate-x-1 transition-transform ${activeSeries === 'redmi' ? 'text-[#ff6700] font-bold' : ''}`}
+          >
+            REDMI Series
+          </li>
+          <li 
+            onMouseEnter={() => setActiveSeries('poco')}
+            className={`cursor-pointer hover:translate-x-1 transition-transform ${activeSeries === 'poco' ? 'text-[#ff6700] font-bold' : ''}`}
+          >
+            POCO Phones
+          </li>
+        </ul>
+      </div>
+      
+      {/* SEKSI TABLET: LANGSUNG KE PRODUK ATAU HALAMAN */}
+      <h4 
+        onClick={() => { setActiveMenu(null); router.push('/?view_product=p178'); }}
+        className="font-bold text-gray-900 text-sm hover:text-[#ff6700] cursor-pointer transition-colors"
+      >
+        Tablets
+      </h4>
+   </div>
+
+   {/* SISI KANAN: TAMPILAN 3 PRODUK BERDASARKAN HOVER */}
+   <div className="w-[80%] flex gap-4">
+      {activeSeries === 'xiaomi' && (
+        <>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p3341'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777704849026-929797264.webp" alt="Xiaomi 17" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">Xiaomi 17</span>
+          </div>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p1921'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777704899691-353395620.webp" alt="Xiaomi 17 Ultra" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">Xiaomi 17 Ultra</span>
+          </div>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p2290'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777704812515-371191512.webp" alt="Xiaomi 15T Pro" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">Xiaomi 15T Pro</span>
+          </div>
+        </>
+      )}
+
+      {activeSeries === 'redmi' && (
+        <>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p1604'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777784472778-535224539.webp" alt="Redmi Note 14" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">Redmi Note 14</span>
+          </div>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p1823'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777704908758-68813948.webp" alt="REDMI A7 Pro" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">REDMI A7 Pro</span>
+          </div>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p2794'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777784261788-346915833.webp" alt="REDMI Note 15 Pro+" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">REDMI Note 15 Pro+</span>
+          </div>
+        </>
+      )}
+
+      {activeSeries === 'poco' && (
+        <>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p220'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777783997053-31616074.webp" alt="POCO C85" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">POCO C85</span>
+          </div>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p349'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777782925684-829324348.webp" alt="POCO F7" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">POCO F7</span>
+          </div>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p4666'); }} className="flex-1 bg-gray-50 p-6 rounded-2xl flex flex-col items-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777782854612-719125560.webp" alt="POCO X7 Pro 5G" className="w-24 h-24 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">POCO X7 Pro 5G</span>
+          </div>
+        </>
+      )}
+   </div>
+</div>
 
             {/* ====== WEARABLES CONTENT ====== */}
-            <div 
-              ref={el => { contentRefs.current['wearables'] = el }}
-              className={`flex gap-8 absolute top-10 left-6 lg:left-10 right-6 lg:right-10 ${activeMenu === 'wearables' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 -z-10 pointer-events-none invisible'}`}
-            >
-               <div className="flex flex-col gap-5 w-[20%] pr-8">
-                  <h4 className="font-bold text-black text-sm cursor-pointer hover:translate-x-1 transition-transform">Smart Watches</h4>
-                  <h4 className="font-bold text-gray-900 text-sm hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Smart Bands</h4>
-                  <h4 className="font-bold text-gray-900 text-sm hover:text-black cursor-pointer hover:translate-x-1 transition-transform">TWS Earphones</h4>
-                  <h4 className="font-bold text-gray-900 text-sm hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Smart Audio Glasses</h4>
-                  <h4 className="font-bold text-gray-900 text-sm hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Smart Tags</h4>
-               </div>
-               <div className="w-[80%] flex gap-4">
-                  <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p2898'); }} className="flex-1 bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer relative border border-gray-100">
-                     <span className="absolute top-4 left-4 text-[10px] font-bold text-gray-800 bg-yellow-100 px-2 py-0.5 rounded-sm">Baru</span>
-                     <img src="/uploads/products/neo-product-1776054216337-191000896.webp" alt="Xiaomi Watch S4" className="w-20 h-20 object-contain mb-4 mix-blend-multiply" />
-                     <span className="text-xs font-semibold text-gray-800 text-center">Xiaomi Watch S4 41mm</span>
-                  </div>
-                  <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p5148'); }} className="flex-1 bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer relative border border-gray-100">
-                     <img src="/uploads/products/neo-product-1776051914100-646660617.webp" alt="REDMI Buds 8 Active" className="w-20 h-20 object-contain mb-4 mix-blend-multiply" />
-                     <span className="text-xs font-semibold text-gray-800 text-center">REDMI Buds 8 Active</span>
-                  </div>
-               </div>
-            </div>
+<div 
+  ref={el => { contentRefs.current['wearables'] = el }}
+  className={`flex gap-8 absolute top-10 left-6 lg:left-10 right-6 lg:left-10 ${activeMenu === 'wearables' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 -z-10 pointer-events-none invisible'}`}
+>
+   {/* SISI KIRI: DAFTAR SUB-KATEGORI */}
+   <div className="flex flex-col gap-5 w-[20%] pr-8">
+      <h4 
+        onMouseEnter={() => setActiveWearable('watches')}
+        className={`font-bold text-sm cursor-pointer hover:translate-x-1 transition-transform ${activeWearable === 'watches' ? 'text-[#ff6700]' : 'text-gray-900'}`}
+      >
+        Smart Watches
+      </h4>
+      <h4 
+        onMouseEnter={() => setActiveWearable('bands')}
+        className={`font-bold text-sm cursor-pointer hover:translate-x-1 transition-transform ${activeWearable === 'bands' ? 'text-[#ff6700]' : 'text-gray-900'}`}
+      >
+        Smart Bands
+      </h4>
+      <h4 
+        onMouseEnter={() => setActiveWearable('tws')}
+        className={`font-bold text-sm cursor-pointer hover:translate-x-1 transition-transform ${activeWearable === 'tws' ? 'text-[#ff6700]' : 'text-gray-900'}`}
+      >
+        TWS Earphones
+      </h4>
+      <h4 
+        onMouseEnter={() => setActiveWearable('glasses')}
+        className={`font-bold text-sm cursor-pointer hover:translate-x-1 transition-transform ${activeWearable === 'glasses' ? 'text-[#ff6700]' : 'text-gray-900'}`}
+      >
+        Smart Audio Glasses
+      </h4>
+      <h4 
+        onMouseEnter={() => setActiveWearable('tags')}
+        className={`font-bold text-sm cursor-pointer hover:translate-x-1 transition-transform ${activeWearable === 'tags' ? 'text-[#ff6700]' : 'text-gray-900'}`}
+      >
+        Smart Tags
+      </h4>
+   </div>
+
+   {/* SISI KANAN: TAMPILAN PRODUK BERDASARKAN HOVER */}
+   <div className="w-[80%] flex gap-4">
+      {activeWearable === 'watches' && (
+        <>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p2898'); }} className="flex-1 bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777704833537-448731008.webp" alt="Xiaomi Watch S4" className="w-20 h-20 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">Xiaomi Watch S4</span>
+          </div>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p9184'); }} className="flex-1 bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777780707281-226474772.webp" alt="Xiaomi Watch 5" className="w-20 h-20 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">Xiaomi Watch 5</span>
+          </div>
+        </>
+      )}
+
+      {activeWearable === 'bands' && (
+        <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p2756'); }} className="w-1/3 bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+           <img src="/uploads/products/neo-product-1777780231707-480920801.webp" alt="Xiaomi Smart Band 9 Pro" className="w-20 h-20 object-contain mb-4 mix-blend-multiply" />
+           <span className="text-xs font-semibold text-gray-800">Xiaomi Smart Band 9 Pro</span>
+        </div>
+      )}
+
+      {activeWearable === 'tws' && (
+        <>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p7154'); }} className="flex-1 bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777780787712-570348860.webp" alt="Xiaomi Air 7" className="w-20 h-20 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">Xiaomi Air 7</span>
+          </div>
+          <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p5148'); }} className="flex-1 bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+             <img src="/uploads/products/neo-product-1777704893173-438243729.webp" alt="REDMI Buds 8 Active" className="w-20 h-20 object-contain mb-4 mix-blend-multiply" />
+             <span className="text-xs font-semibold text-gray-800">REDMI Buds 8 Active</span>
+          </div>
+        </>
+      )}
+
+      {activeWearable === 'glasses' && (
+        <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p1157'); }} className="w-1/3 bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+           <img src="/uploads/products/neo-product-1777781378233-632758031.webp" alt="Xiaomi Smart Glasses KV2" className="w-20 h-20 object-contain mb-4 mix-blend-multiply" />
+           <span className="text-xs font-semibold text-gray-800">Xiaomi Smart Audio Glasses</span>
+        </div>
+      )}
+
+      {activeWearable === 'tags' && (
+        <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p2944'); }} className="w-1/3 bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center hover:shadow-lg transition-all cursor-pointer border border-gray-100">
+           <img src="/uploads/products/neo-product-1777780435430-520710842.webp" alt="Xiaomi Tag" className="w-20 h-20 object-contain mb-4 mix-blend-multiply" />
+           <span className="text-xs font-semibold text-gray-800">Xiaomi Tag</span>
+        </div>
+      )}
+   </div>
+</div>
 
             {/* ====== LIFESTYLE CONTENT ====== */}
             <div 
@@ -484,71 +619,74 @@ export default function Navbar() {
                    <div className="flex flex-col gap-4">
                       <h4 className="font-bold text-gray-900 text-sm mb-1">Chargings</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Powerbanks <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
-                        <li className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Adapters <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Wireless</li>
-                        <li className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Cables <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo16v0g00076c1w9by2z38b'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Powerbanks <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo16uze00016c1w805p63pv'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Adapters <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo16v0700036c1wn9yffp0d'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Wireless</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo16v0b00056c1wwmaea89f'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Cables <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
                       </ul>
+                      
                       <h4 className="font-bold text-gray-900 text-sm mt-4 mb-1">Health & Fitness</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo0r1vd0001b84oxnckyjdq'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Pets Care</li>
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo0r1vk0003b84o9a47b592'); }} className="hover:text-[#ff6700] cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Clothing Care <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo0r1vr0005b84o34lpv67n'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Water Bottles</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo0r1vd0001b84oxnckyjdq'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Pets Care</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo0r1vk0003b84o9a47b592'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Clothing Care <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo0r1vr0005b84o34lpv67n'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Water Bottles</li>
                       </ul>
                    </div>
                    <div className="flex flex-col gap-4">
                       <h4 className="font-bold text-gray-900 text-sm mb-1">Outdoors</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxwy0001ldcihwd735ra'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Scooters</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Glasses</li>
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxx90003ldcicmuhft4v'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Luggages</li>
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxxf0005ldci663o7gce'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Air Compressors</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxwy0001ldcihwd735ra'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Scooters</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=p1157'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Glasses</li>
+                        
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxx90003ldcicmuhft4v'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Luggages</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxxf0005ldci663o7gce'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Air Compressors</li>
                       </ul>
                       <h4 className="font-bold text-gray-900 text-sm mt-4 mb-1">Tools</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
                         <li onClick={() => { setActiveMenu(null); router.push('/?view_product=p7342'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Screwdrivers <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Selfie Sticks</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=p3173'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Selfie Sticks</li>
                       </ul>
                    </div>
                    <div className="flex flex-col gap-4">
                       <h4 className="font-bold text-gray-900 text-sm mb-1">Offices</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09eyp0001rhltgy8y0cgu'); }} className="hover:text-[#ff6700] cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Monitors <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ez00003rhlt76eh5c96'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Routers</li>
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ez50005rhltzx0jx8rt'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Extenders</li>
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ezc0009rhltnnkwtu1m'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Tablets</li>
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ez90007rhlthbzwyiqw'); }} className="hover:text-[#ff6700] cursor-pointer hover:translate-x-1 transition-transform">Accessories</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09eyp0001rhltgy8y0cgu'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Monitors <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ez00003rhlt76eh5c96'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Routers</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ez50005rhltzx0jx8rt'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Extenders</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ezc0009rhltnnkwtu1m'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Tablets</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo09ez90007rhlthbzwyiqw'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Accessories</li>
                       </ul>
                    </div>
                    <div className="flex flex-col gap-4">
                       <h4 className="font-bold text-gray-900 text-sm mb-1">Personal Care</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Hair Dryers</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Shavers</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Hair Clippers</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=p345'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Hair Dryers</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=p3614'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Shavers</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=p7224'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Hair Clippers</li>
                       </ul>
                    </div>
                </div>
+               
                {/* Featured items border left */}
                <div className="w-[40%] pl-8 border-l border-gray-100 flex flex-col">
                   <h4 className="font-bold text-gray-900 mb-6 text-sm hover:text-black cursor-pointer flex justify-between group/link transition-colors">
                      Online 24 produk baru <span className="text-gray-400 group-hover/link:text-black transition-colors">&gt;</span>
                   </h4>
                   <div className="grid grid-cols-2 grid-rows-2 gap-4 flex-1">
-                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxwy0001ldcihwd735ra'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                         <img src="/uploads/products/scooter-4-lite.png" alt="Scooter" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
-                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Xiaomi Scooter 4 Lite</span>
-                      </div>
-                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxx90003ldcicmuhft4v'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                         <img src="/uploads/products/luggage-classic-pro.png" alt="Luggage" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
-                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Xiaomi Luggage Classic Pro</span>
-                      </div>
-                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=cmonzvxxf0005ldci663o7gce'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                         <img src="/uploads/products/air-compressor-1s.png" alt="Air Compressor" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
-                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Portable Air Compressor 1S</span>
-                      </div>
-                     <div className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1604044521.16834169.png" alt="Lint Remover" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo16v0b00056c1wwmaea89f'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                        <img src="/uploads/products/charge-cable-c-to-c.png" alt="Braided Cable" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
+                        <span className="text-[10px] font-semibold text-gray-600 leading-tight">Braided USB-C Cable</span>
+                     </div>
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo16v0g00076c1w9by2z38b'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                        <img src="/uploads/products/charge-powerbank-20k.png" alt="Power Bank" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
+                        <span className="text-[10px] font-semibold text-gray-600 leading-tight">Xiaomi Powerbank 20,000</span>
+                     </div>
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=cmoo16uze00016c1w805p63pv'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                        <img src="/uploads/products/charge-adapter-90w.png" alt="Fast Charger" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
+                        <span className="text-[10px] font-semibold text-gray-600 leading-tight">90W HyperCharge</span>
+                     </div>
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p1627'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                        <img src="/uploads/products/neo-product-1777783155632-739779606.webp" alt="Lint Remover" className="w-12 h-12 object-contain mb-2 mix-blend-multiply" />
                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Mijia Lint Remover 2</span>
                      </div>
                   </div>
