@@ -45,6 +45,20 @@ export default function Navbar() {
   const [activeWearable, setActiveWearable] = useState<'watches' | 'bands' | 'tws' | 'glasses' | 'tags'>('watches');
   const [menuHeight, setMenuHeight] = useState<number>(0);
   const [mounted, setMounted] = useState(false);
+  const [eventProducts, setEventProducts] = useState<{ daily: any[], newest: any[] }>({ daily: [], newest: [] });
+  const [activeEventTab, setActiveEventTab] = useState<'daily' | 'newest'>('daily');
+
+  useEffect(() => {
+    fetch('/api/products/event')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) {
+          setEventProducts({ daily: data.daily || [], newest: data.newest || [] });
+        }
+      })
+      .catch(err => console.error("Error fetching event products:", err));
+  }, []);
+
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -379,48 +393,43 @@ export default function Navbar() {
                    <div className="flex flex-col gap-4">
                       <h4 className="font-bold text-gray-900 text-sm mb-1">Event Penting</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Pilihan Harian</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Baru Diluncurkan</li>
+                        <li onMouseEnter={() => setActiveEventTab('daily')} className={`hover:text-black cursor-pointer hover:translate-x-1 transition-transform ${activeEventTab === 'daily' ? 'text-[#ff6700] font-bold' : ''}`}>Pilihan Harian</li>
+                        <li onMouseEnter={() => setActiveEventTab('newest')} className={`hover:text-black cursor-pointer hover:translate-x-1 transition-transform ${activeEventTab === 'newest' ? 'text-[#ff6700] font-bold' : ''}`}>Baru Diluncurkan</li>
                       </ul>
                    </div>
                    <div className="flex flex-col gap-4">
-                      <h4 className="font-bold text-gray-900 text-sm mb-1">Fitur Nitec.com</h4>
+                      <h4 className="font-bold text-gray-900 text-sm mb-1">Layanan Mi Store</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Zona Pengguna Baru</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Penukaran IMEI</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Hadiah Ulang Tahun</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Unduh App Nitec Store</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/support'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Pusat Bantuan</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/faq'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">FAQ (Pertanyaan Umum)</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/about'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform text-[#ff6700] font-bold">Tentang Tim Kami</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/returns'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Kebijakan Pengembalian</li>
                       </ul>
                    </div>
                </div>
               <div className="w-[40%] flex flex-col pl-8 border-l border-gray-100">
                   <h4 className="font-bold text-gray-900 mb-4 text-sm hover:text-black cursor-pointer flex justify-between group/link transition-colors">
-                     Pilihan Harian <span className="text-gray-400 group-hover/link:text-black transition-colors">&gt;</span>
+                     {activeEventTab === 'daily' ? 'Pilihan Harian' : 'Baru Diluncurkan'} <span className="text-gray-400 group-hover/link:text-black transition-colors">&gt;</span>
                   </h4>
                   <div className="grid grid-cols-2 grid-rows-2 gap-4 flex-1">
-                     {/* POCO C85 */}
-                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p220'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="/uploads/products/neo-product-1777783997053-31616074.webp" alt="POCO C85" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
-                        <span className="text-[10px] font-semibold text-gray-600 leading-tight">POCO C85</span>
-                     </div>
-                     
-                     {/* POCO F7 */}
-                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p349'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="/uploads/products/neo-product-1777782925684-829324348.webp" alt="POCO F7" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
-                        <span className="text-[10px] font-semibold text-gray-600 leading-tight">POCO F7</span>
-                     </div>
-                     
-                     {/* POCO M7 */}
-                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p5058'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="/uploads/products/neo-product-1777782999400-465542448.webp" alt="POCO M7" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
-                        <span className="text-[10px] font-semibold text-gray-600 leading-tight">POCO M7</span>
-                     </div>
-                     
-                     {/* POCO X7 Pro 5G */}
-                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p4666'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="/uploads/products/neo-product-1777782854612-719125560.webp" alt="POCO X7 Pro 5G" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
-                        <span className="text-[10px] font-semibold text-gray-600 leading-tight">POCO X7 Pro 5G</span>
-                     </div>
+                     {eventProducts[activeEventTab]?.length > 0 ? (
+                       eventProducts[activeEventTab].map((p: any) => {
+                         let imgUrl = '';
+                         try {
+                           imgUrl = JSON.parse(p.images || '[]')[0] || '';
+                         } catch (e) {
+                           imgUrl = '';
+                         }
+                         return (
+                           <div key={p.id} onClick={() => { setActiveMenu(null); router.push(`/?view_product=${p.id}`); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                              {imgUrl && <img src={imgUrl} alt={p.name} className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />}
+                              <span className="text-[10px] font-semibold text-gray-600 leading-tight line-clamp-2">{p.name}</span>
+                           </div>
+                         );
+                       })
+                     ) : (
+                       <div className="col-span-2 row-span-2 flex items-center justify-center text-gray-400 text-xs">Memuat produk...</div>
+                     )}
                   </div>
                </div>
             </div>
@@ -703,37 +712,37 @@ export default function Navbar() {
                       <h4 className="font-bold text-gray-900 text-sm mb-1">TVs & HA</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
                         <li onClick={() => { setActiveMenu(null); router.push('/?view_product=p8172'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">TVs <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
-                        <li className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">TV Boxes/Sticks <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Projectors</li>
-                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=p316'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Refrigerators <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Washing Machines</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou805mg000521g3i3fe2oqy'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">TV Boxes/Sticks <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou805m1000121g3323pxpbk'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Projectors</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou805mb000321g3isscuz6h'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Refrigerators <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou805mk000721g349azl7gl'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Washing Machines</li>
                       </ul>
                    </div>
                    <div className="flex flex-col gap-4">
                       <h4 className="font-bold text-gray-900 text-sm mb-1">Vacuum Cleaners</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Robot Vacuums</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Handheld Vacuums</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Wet Dry Vacuums</li>
-                        <li className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Accessories <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou87rao00038xdbhkwxvlpc'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Robot Vacuums</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou87rae00018xdblfju3eav'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Handheld Vacuums</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou87ras00058xdbyery09it'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Wet Dry Vacuums</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou87raz00078xdbiks6hpsa'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Accessories <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
                       </ul>
                    </div>
                    <div className="flex flex-col gap-4">
                       <h4 className="font-bold text-gray-900 text-sm mb-1">Environment</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Air Purifiers</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Dehumidifiers</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Monitors</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Accessories</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou7lesu0001wdkgqphqek7i'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Air Purifiers</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou7let60005wdkgcf4s0kui'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Dehumidifiers</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou7leta0007wdkgqy1joy06'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Monitors</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou7let40003wdkgibpamr3g'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Accessories</li>
                       </ul>
                    </div>
                    <div className="flex flex-col gap-4">
                       <h4 className="font-bold text-gray-900 text-sm mb-1">Kitchen & Sec</h4>
                       <ul className="flex flex-col gap-3 text-[12px] text-gray-500 font-medium">
-                        <li className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Security Cameras <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Smart Doorbells</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Air Fryers</li>
-                        <li className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Induction Cookers</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou7t7pe0005t0sptbs1oadd'); }} className="hover:text-black cursor-pointer flex justify-between hover:translate-x-1 transition-transform">Security Cameras <span className="text-gray-800 text-[9px] bg-gray-100 px-1 rounded font-bold border border-gray-300">BARU</span></li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou7t7pi0007t0sp0vxpxzjq'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Smart Doorbells</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou7t7p00001t0sp2hhl3pa0'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Air Fryers</li>
+                        <li onClick={() => { setActiveMenu(null); router.push('/?view_product=cmou7t7p50003t0spjohsznxe'); }} className="hover:text-black cursor-pointer hover:translate-x-1 transition-transform">Induction Cookers</li>
                       </ul>
                    </div>
                </div>

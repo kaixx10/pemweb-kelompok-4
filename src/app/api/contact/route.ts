@@ -26,19 +26,19 @@ export async function POST(req: Request) {
     const mailOptions = {
       from: `"${name}" <${email}>`, // Alias pengirim
       to: "badarrahman1905@gmail.com", // Email tujuan (email Admin/Anda)
-      subject: `Pesan CS Baru dari ${name} (Neo Store)`,
-      text: `Anda menerima pesan baru dari halaman Support Neo Store.\n\nPengirim: ${name}\nEmail: ${email}\n\nPesan:\n${message}`,
+      subject: `Pesan CS Baru dari ${name} (Mi Store)`,
+      text: `Anda menerima pesan baru dari halaman Support Mi Store.\n\nPengirim: ${name}\nEmail: ${email}\n\nPesan:\n${message}`,
       html: `
         <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 600px;">
           <h2 style="color: #ff6700; margin-top: 0;">Pesan Customer Service Baru</h2>
-          <p>Anda menerima pesan baru dari halaman Support <strong>Neo Store</strong>.</p>
+          <p>Anda menerima pesan baru dari halaman Support <strong>Mi Store</strong>.</p>
           <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
           <p><strong>Pengirim:</strong> ${name}</p>
           <p><strong>Email Pengirim:</strong> <a href="mailto:${email}">${email}</a></p>
           <p><strong>Pesan:</strong></p>
           <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; white-space: pre-wrap;">${message}</div>
           <br/>
-          <p style="font-size: 12px; color: #888;">Email ini dikirim secara otomatis oleh sistem Neo Store.</p>
+          <p style="font-size: 12px; color: #888;">Email ini dikirim secara otomatis oleh sistem Mi Store.</p>
         </div>
       `,
     };

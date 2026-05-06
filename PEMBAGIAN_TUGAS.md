@@ -1,11 +1,11 @@
-# Rencana Penyelesaian Proyek: Neo Store
+# Rencana Penyelesaian Proyek: Mi Store
 Daftar seluruh kekurangan dan pembagian tugas untuk 5 anggota kelompok (A, B, C, D, E).
 
 > [!IMPORTANT]
 > **Definisi Selesai (Definition of Done)**: Proyek dianggap "Cukup Bagus/Realistis" apabila pengguna bisa mendaftar, melihat katalog nyata dari database, menambahkan ke keranjang dengan *session* yang aman, melakukan *checkout*, dan Admin dapat memonitor atau menambah barang tersebut.
 
 ## Kekurangan Proyek Saat Ini (The Backlog)
-Sebelum membagi tugas, berikut adalah daftar fitur esensial dari sebuah *e-commerce* yang **belum** ada di Neo Store saat ini:
+Sebelum membagi tugas, berikut adalah daftar fitur esensial dari sebuah *e-commerce* yang **belum** ada di Mi Store saat ini:
 1. **Database & ORM:** Skema MySQL dan Prisma belum ada (Tabel User, Produk, Kategori, Tranksasi).
 2. **Autentikasi (Login/Register):** Perlindungan akun pengguna dan pemisahan hak akses antara Pembeli dan Admin.
 3. **Katalog Dinamis:** Halaman detail produk tunggal (`/product/[id]`) dan halaman filter kategori berdasarkan database.
