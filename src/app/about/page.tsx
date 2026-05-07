@@ -16,30 +16,30 @@ const teamMembers = [
   {
     name: "Badar Rahman",
     nim: "14524303",
-    role: "Project Leader / Fullstack Developer",
+    role: "19 Mei 2006",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
   },
   {
-    name: "Anggota Kelompok 4",
-    nim: "14524xxx",
-    role: "Frontend Developer",
+    name: "Khaira Nur Fatihah",
+    nim: "14524008",
+    role: "10 Januari 2007",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
   },
   {
-    name: "Anggota Kelompok 4",
-    nim: "14524xxx",
+    name: "Nassar Afif ",
+    nim: "14524020",
     role: "UI/UX Designer",
     image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
   },
   {
-    name: "Anggota Kelompok 4",
-    nim: "14524xxx",
+    name: "Teguh Hadi Rachmat",
+    nim: "14524212",
     role: "Backend Developer",
     image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
   },
   {
-    name: "Anggota Kelompok 4",
-    nim: "14524xxx",
+    name: "Ubaidillah Mubbarok",
+    nim: "14524021",
     role: "Data Analyst",
     image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
   }

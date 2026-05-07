@@ -751,20 +751,27 @@ export default function Navbar() {
                      Online 24 produk baru <span className="text-gray-400 group-hover/link:text-black transition-colors">&gt;</span>
                   </h4>
                   <div className="grid grid-cols-2 grid-rows-2 gap-4 flex-1">
-                     <div className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="https://i02.appmifile.com/mi-com-product/fly-birds/xiaomi-tv-a-32-2025/pc/21b9da8591bd051e59ed1ee24c4dc8c1.png" alt="TV A 32" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
+                     {/* Xiaomi TV A 32 2026 */}
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p5447'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                        <img src="/uploads/products/neo-product-1777707950060-303858264.webp" alt="TV A 32" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Xiaomi TV A 32 2026</span>
                      </div>
+
+                     {/* Xiaomi TV A 43 FHD */}
                      <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p8172'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="/uploads/products/neo-product-1776052289009-52780260.webp" alt="TV A 43" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
+                        <img src="/uploads/products/neo-product-1777704886235-468993098.webp" alt="TV A 43" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Xiaomi TV A 43 FHD</span>
                      </div>
+
+                     {/* Mijia Refrigerator Side 635L */}
                      <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p316'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="/uploads/products/neo-product-1776052829830-336730713.webp" alt="Refrigerator" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
+                        <img src="/uploads/products/neo-product-1777704867870-909887034.webp" alt="Refrigerator" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Mijia Refrigerator Side 635L</span>
                      </div>
-                     <div className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
-                        <img src="https://i02.appmifile.com/mi-com-product/fly-birds/xiaomi-robot-vacuum-x20-plus/pc/d30b91e9a7eaf0bc23ff01a6136d812d.png" alt="Vacuum" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
+
+                     {/* Xiaomi Vacuum G30 Max */}
+                     <div onClick={() => { setActiveMenu(null); router.push('/?view_product=p8875'); }} className="bg-[#f9f9f9] rounded-2xl flex flex-col items-center justify-center p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer text-center border border-gray-100">
+                        <img src="/uploads/products/neo-product-1777708202207-336778188.webp" alt="Vacuum" className="w-14 h-14 object-contain mb-2 mix-blend-multiply" />
                         <span className="text-[10px] font-semibold text-gray-600 leading-tight">Xiaomi Vacuum G30 Max</span>
                      </div>
                   </div>

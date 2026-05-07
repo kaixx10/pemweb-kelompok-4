@@ -99,10 +99,6 @@ export default function Footer() {
         {/* Bottom Copyright */}
         <div className="mt-16 pt-8 border-t border-[#262626] flex flex-col md:flex-row justify-between items-center gap-4 text-[12px] text-[#555]">
           <p>© {new Date().getFullYear()} Xiaomi. Tugas Kuliah Semester 4 - Kelompok 4</p>
-          <div className="flex gap-6">
-            <Link href="#" className="hover:text-white transition-colors">Kebijakan Privasi</Link>
-            <Link href="#" className="hover:text-white transition-colors">Cookie</Link>
-          </div>
         </div>
       </div>
     </footer>
