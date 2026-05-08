@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { ChevronDown, HelpCircle, MessageCircle, Phone, Search } from 'lucide-react';
-
+import Link from "next/link";
+ 
 const faqs = [
   {
     category: "Pemesanan & Pembayaran",
@@ -126,14 +127,14 @@ export default function FAQPage() {
             <h2 className="text-2xl font-bold mb-3">Masih punya pertanyaan?</h2>
             <p className="text-gray-400 mb-8 font-light">Tim dukungan kami siap membantu Anda 24/7 untuk setiap kendala yang Anda hadapi.</p>
             <div className="flex flex-wrap justify-center gap-4">
-              <button className="bg-[#ff6700] hover:bg-[#e65c00] text-white px-8 py-3 rounded-full font-bold flex items-center gap-2 transition-all">
+              <Link href="/chat" className="bg-[#ff6700] hover:bg-[#e65c00] text-white px-8 py-3 rounded-full font-bold flex items-center gap-2 transition-all">
                 <MessageCircle size={18} />
                 Live Chat
-              </button>
-              <button className="bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-full font-bold flex items-center gap-2 transition-all backdrop-blur-sm">
+              </Link>
+              <a href="https://wa.me/6282117236765" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-full font-bold flex items-center gap-2 transition-all backdrop-blur-sm">
                 <Phone size={18} />
-                Hubungi Kami
-              </button>
+                WhatsApp Kami
+              </a>
             </div>
           </div>
         </div>

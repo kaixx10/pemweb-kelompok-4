@@ -191,7 +191,7 @@ export default function SupportPage() {
                   </Link>
                   
                   <Link 
-                    href="https://wa.me/6282117236666"
+                    href="https://wa.me/6282117236765"
                     target="_blank"
                     className="w-full py-3 px-4 bg-[#25D366] hover:bg-[#1DA851] text-white rounded-xl font-bold transition-colors flex items-center justify-start gap-3 shadow-sm"
                   >
